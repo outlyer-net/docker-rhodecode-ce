@@ -41,12 +41,12 @@ USER rhodecode
 # Split into two scripts in an attempt to increase the chance of it being cached
 
 # 1: Just the downloads
-COPY prepare-downloads.bash /tmp
+COPY build/prepare-downloads.bash /tmp
 RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
         bash /tmp/prepare-downloads.bash
 
 # 2: Installation. Note reinstall is modified inside prepare-image.bash
-COPY prepare-image.bash /tmp
+COPY build/prepare-image.bash /tmp
 COPY ./container/reinstall.sh /home/rhodecode/
 RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
         bash /tmp/prepare-image.bash
