@@ -60,6 +60,6 @@ sed -i \
 echo -e '[supervisord]\nnodaemon = true' >> ${RC_CONTROLDIR}/supervisor/rhodecode_config_supervisord.ini
 ${RC_CONTROL} self-stop
 
-echo "PATH=\$PATH:~/.rccontrol-profile/bin"
+echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
 
 sed -i 's/^RC_VERSION=.*/RC_VERSION='${RC_VERSION}'/' ~/reinstall.sh
