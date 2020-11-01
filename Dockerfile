@@ -70,8 +70,12 @@ ENV RHODECODE_HOST=0.0.0.0
 
 RUN mkdir -p /home/rhodecode/repo
 
-RUN .rccontrol-profile/bin/rccontrol install VCSServer --accept-license '{"host":"'"$RHODECODE_HOST"'", "port":'"$RHODECODE_VCS_PORT"'}' --version ${RC_VERSION}} --offline
-RUN .rccontrol-profile/bin/rccontrol install --accept-license Community  '{"host":"'"$RHODECODE_HOST"'", "port":'"$RHODECODE_HTTP_PORT"', "username":"'"$RHODECODE_USER"'", "password":"'"$RHODECODE_USER_PASS"'", "email":"'"$RHODECODE_USER_EMAIL"'", "repo_dir":"'"$RHODECODE_REPO_DIR"'", "database": "'"$RHODECODE_DB"'"}' --version ${RC_VERSION} --offline
+RUN .rccontrol-profile/bin/rccontrol install VCSServer --accept-license \
+        --version 4.6.1 --offline \
+        '{"host":"'"$RHODECODE_HOST"'", "port":'"$RHODECODE_VCS_PORT"'}'
+RUN .rccontrol-profile/bin/rccontrol install --accept-license Community \
+        --version ${RC_VERSION} --offline \
+        '{"host":"'"$RHODECODE_HOST"'", "port":'"$RHODECODE_HTTP_PORT"', "username":"'"$RHODECODE_USER"'", "password":"'"$RHODECODE_USER_PASS"'", "email":"'"$RHODECODE_USER_EMAIL"'", "repo_dir":"'"$RHODECODE_REPO_DIR"'", "database": "'"$RHODECODE_DB"'"}'
 
 RUN sed -i "s/start_at_boot = True/start_at_boot = False/g" ~/.rccontrol.ini
 RUN sed -i "s/self_managed_supervisor = False/self_managed_supervisor = True/g" ~/.rccontrol.ini
