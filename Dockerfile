@@ -4,12 +4,13 @@ FROM ubuntu:16.04
 LABEL maintainer="Darius Kristapavicius <darius@darneta.lt>"
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
-RUN apt-get update
-RUN apt-get -y install wget
-RUN apt-get -y install python
-RUN apt-get -y install sudo
-RUN apt-get -y install bzip2
-RUN apt-get -y install supervisor
+RUN apt-get update \
+        && apt-get -y install \
+                    bzip2 \
+                    python \
+                    sudo \
+                    supervisor \
+                    wget
 
 # TODO: RhodeCode binaries are installed on ~/.rccontrol-profile/bin/
 
