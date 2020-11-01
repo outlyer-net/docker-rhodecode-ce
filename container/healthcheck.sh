@@ -2,7 +2,7 @@
 
 set -e
 
-RCC_STATUS=~"/.rccontrol-profile/bin/rccontrol-status"
+RCC_STATUS=~/".rccontrol-profile/bin/rccontrol-status"
 
 # No need to chain <= set -e
 
