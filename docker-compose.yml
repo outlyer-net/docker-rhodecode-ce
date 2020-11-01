@@ -29,6 +29,10 @@ services:
 
   rhodecode:
     container_name: rhodecode
+    #image: darneta/rhodecode-ce-dockerized
+    build:
+      context: .
+      dockerfile: Dockerfile
     links:
      - db:db
     environment:
