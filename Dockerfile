@@ -88,8 +88,10 @@ RUN .rccontrol-profile/bin/rccontrol install Community \
         ' "repo_dir":"'"$RHODECODE_REPO_DIR"'", '\
         ' "database": "'"$RHODECODE_DB"'"}'
 
-RUN sed -i "s/start_at_boot = True/start_at_boot = False/g" ~/.rccontrol.ini
-RUN sed -i "s/self_managed_supervisor = False/self_managed_supervisor = True/g" ~/.rccontrol.ini
+RUN sed -i \
+    -e 's/start_at_boot = True/start_at_boot = False/g' \
+    -e 's/self_managed_supervisor = False/self_managed_supervisor = True/g' \
+    ~/.rccontrol.ini
 
 RUN touch .rccontrol/supervisor/rhodecode_config_supervisord.ini
 RUN echo "[supervisord]" >> .rccontrol/supervisor/rhodecode_config_supervisord.ini
