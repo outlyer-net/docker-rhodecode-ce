@@ -71,7 +71,7 @@ ENV RHODECODE_HOST=0.0.0.0
 RUN mkdir -p /home/rhodecode/repo
 
 RUN .rccontrol-profile/bin/rccontrol install VCSServer \
-        --version 4.6.1 \
+        --version ${RC_VERSION} \
         --accept-license \
         --offline \
         '{ "host": "'"$RHODECODE_HOST"'", '\
