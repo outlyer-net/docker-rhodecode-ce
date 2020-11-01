@@ -63,6 +63,6 @@ LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
 # --- END OF ORIGINAL DOCKERFILE COMMANDS ---
 
-# TODO: RhodeCode binaries are installed on ~/.rccontrol-profile/bin/
+RUN echo 'export PATH="$PATH:~/.rccontrol-profile/bin"' >> ~/.bashrc
 
 CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]
