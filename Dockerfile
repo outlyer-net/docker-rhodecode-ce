@@ -98,5 +98,6 @@ RUN echo '[supervisord]\nnodaemon = true' >> .rccontrol/supervisor/rhodecode_con
 RUN .rccontrol-profile/bin/rccontrol self-stop
 
 COPY ./container/reinstall.sh /home/rhodecode/
+RUN sed -i 's/^RC_VERSION=.*/RC_VERSION='${RC_VERSION}'/' /home/rhodecode/reinstall.sh
 
 CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]

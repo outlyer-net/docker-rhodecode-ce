@@ -1,5 +1,7 @@
 #!/bin/bash
 
+RC_VERSION=4.6.1
+
 read -r -d '' CONF <<EOF
 {
     "host": '$RHODECODE_HOST',
@@ -14,7 +16,7 @@ EOF
 
 ~/.rccontrol-profile/bin/rccontrol uninstall community-1
 ~/.rccontrol-profile/bin/rccontrol install --accept-license Community \
-    --version 4.6.1 \
+    --version "$RC_VERSION" \
     --offline \
     "$CONF"
 
