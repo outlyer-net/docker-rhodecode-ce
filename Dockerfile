@@ -61,7 +61,7 @@ RUN .rccontrol-profile/bin/rccontrol self-init
 
 ENV RHODECODE_USER=admin
 ENV RHODECODE_USER_PASS=secret
-ENV RHODECODE_USER_EMAIL=support@rhodecode.com
+ENV RHODECODE_USER_EMAIL=rhodecode-support@example.com
 ENV RHODECODE_DB=sqlite
 ENV RHODECODE_REPO_DIR=/home/rhodecode/repo
 ENV RHODECODE_VCS_PORT=3690
