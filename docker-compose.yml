@@ -22,6 +22,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "3690:3690"
     links:
      - db:db
     environment:
