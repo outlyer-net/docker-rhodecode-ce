@@ -32,6 +32,8 @@ RUN useradd -ms /bin/bash rhodecode \
         && locale-gen en_US.UTF-8 \
         && update-locale
 
+COPY container/healthcheck.sh /healthcheck
+
 USER rhodecode
 
 #VOLUME ${RHODECODE_REPO_DIR}
@@ -50,6 +52,8 @@ COPY build/prepare-image.bash /tmp
 COPY ./container/reinstall.sh /home/rhodecode/
 RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
         bash /tmp/prepare-image.bash
+
+HEALTHCHECK CMD [ "/healthcheck" ]
 
 WORKDIR /home/rhodecode
 CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]
