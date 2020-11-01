@@ -51,4 +51,5 @@ COPY ./container/reinstall.sh /home/rhodecode/
 RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
         bash /tmp/prepare-image.bash
 
+WORKDIR /home/rhodecode
 CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]
