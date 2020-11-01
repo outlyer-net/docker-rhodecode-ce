@@ -30,9 +30,13 @@ RUN useradd -ms /bin/bash rhodecode \
         && sudo adduser rhodecode sudo \
         && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
         && locale-gen en_US.UTF-8 \
-        && update-locale 
+        && update-locale
 
 USER rhodecode
+
+#VOLUME ${RHODECODE_REPO_DIR}
+#VOLUME /home/rhodecode/.rccontrol/community-1
+#VOLUME /home/rhodecode/.rccontrol/vcsserver-1
 
 # Split into two scripts in an attempt to increase the chance of it being cached
 
