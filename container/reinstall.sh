@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RC_VERSION=4.6.1
+RC_VERSION=4.22.0
 
 read -r -d '' CONF <<EOF
 {
@@ -15,8 +15,9 @@ read -r -d '' CONF <<EOF
 EOF
 
 ~/.rccontrol-profile/bin/rccontrol uninstall community-1
-~/.rccontrol-profile/bin/rccontrol install --accept-license Community \
-    --version "$RC_VERSION" \
+~/.rccontrol-profile/bin/rccontrol install Community \
+    --accept-license \
     --offline \
+    --version "$RC_VERSION" \
     "$CONF"
 
