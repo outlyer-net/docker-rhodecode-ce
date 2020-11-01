@@ -7,6 +7,7 @@ LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 RUN apt-get update \
         && apt-get -y install \
                     bzip2 \
+                    locales \
                     python \
                     sudo \
                     supervisor \
