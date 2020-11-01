@@ -32,9 +32,6 @@ RUN mkdir -p /home/rhodecode/.rccontrol/cache
 
 WORKDIR /home/rhodecode/.rccontrol/cache
 
-#RUN wget https://dls.rhodecode.com/linux/RhodeCodeVCSServer-4.6.1+x86_64-linux_build20170213_1900.tar.bz2
-#RUN wget https://dls.rhodecode.com/linux/RhodeCodeCommunity-4.6.1+x86_64-linux_build20170213_1900.tar.bz2
-
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html#offline-upgrading
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/offline-installer.html
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
