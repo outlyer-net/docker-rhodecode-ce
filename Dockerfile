@@ -1,6 +1,8 @@
 FROM ubuntu:16.04
 
-MAINTAINER Darius Kristapavicius <darius@darneta.lt>
+# Original maintainer
+LABEL maintainer="Darius Kristapavicius <darius@darneta.lt>"
+LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
 RUN apt-get update
 RUN apt-get -y install wget
@@ -8,6 +10,8 @@ RUN apt-get -y install python
 RUN apt-get -y install sudo
 RUN apt-get -y install bzip2
 RUN apt-get -y install supervisor
+
+# TODO: RhodeCode binaries are installed on ~/.rccontrol-profile/bin/
 
 RUN useradd -ms /bin/bash rhodecode
 RUN sudo adduser rhodecode sudo

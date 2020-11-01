@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+
+  rhodecode:
+    image: darneta/rhodecode-ce-dockerized
+    links:
+      - db
+    volumes:
+     - /home/rhodecode/repo
+    expose:
+      - 8080
+      - 3690
+    ports:
+      - 8080
+      - 3690
