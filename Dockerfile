@@ -2,6 +2,8 @@ FROM darneta/rhodecode-ce-dockerized
 
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
+ARG RC_VERSION=4.22
+
 # Commented-out since the old downloads aren't available anymore
 # TODO: Consider alternatives
 
@@ -64,5 +66,13 @@ LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 # --- END OF ORIGINAL DOCKERFILE COMMANDS ---
 
 RUN echo 'export PATH="$PATH:~/.rccontrol-profile/bin"' >> ~/.bashrc
+
+# Upgrade RhodeCode Control and servers
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-to-latest.html
+RUN .rccontrol-profile/bin/rccontrol self-update \
+        && .rccontrol-profile/bin/rccontrol upgrade vcsserver-1 --version ${RC_VERSION} \
+        && .rccontrol-profile/bin/rccontrol upgrade community-1 --version ${RC_VERSION}
+
 
 CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]
