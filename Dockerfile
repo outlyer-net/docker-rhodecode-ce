@@ -2,7 +2,9 @@ FROM ubuntu:16.04
 
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
+#ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
+#ARG MANIFEST=https://dls.rhodecode.com/linux/MANIFEST
 
 # Commented-out since the old downloads aren't available anymore
 # TODO: Consider alternatives
