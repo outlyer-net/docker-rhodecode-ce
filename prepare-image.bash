@@ -7,7 +7,7 @@ RC_CACHEDIR="${RC_CONTROLDIR}/cache"
 RC_CONTROL=~/.rccontrol-profile/bin/rccontrol
 REPOBASEDIR=~/repo
 
-# Fail early if the required files aren't found
+# Fail early if the required files and directories aren't found
 test -f ~/reinstall.sh
 test -f "${RC_CACHEDIR}/RhodeCodeCommunity"*
 test -f "${RC_CACHEDIR}/RhodeCodeVCSServer"*
@@ -29,6 +29,9 @@ cd ~
 # - ~/.rccontrol/vcsserver-1
 #     RhodeCode's VCS Server configuration and logs
 # NOTE ~/.rccontrol/ also includes cache/ and supervisor/, which I see no point in exporting
+
+# NOTE RhodeCode-installer won't install to symlinked directories!
+#      RhodeCode appears to run ok, if the directories are moved around  
 
 ${RC_CONTROL} install VCSServer \
         --version ${RC_VERSION} \
