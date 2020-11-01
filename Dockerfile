@@ -15,12 +15,12 @@ RUN apt-get update \
 
 # TODO: RhodeCode binaries are installed on ~/.rccontrol-profile/bin/
 
-RUN useradd -ms /bin/bash rhodecode
-RUN sudo adduser rhodecode sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd -ms /bin/bash rhodecode \
+        sudo adduser rhodecode sudo \
+        echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN locale-gen en_US.UTF-8
-RUN update-locale 
+RUN locale-gen en_US.UTF-8 \
+        update-locale 
 
 USER rhodecode
 
