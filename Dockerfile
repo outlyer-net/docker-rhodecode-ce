@@ -5,6 +5,7 @@ LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 #ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
 #ARG MANIFEST=https://dls.rhodecode.com/linux/MANIFEST
+ARG ARCH=x86_64
 
 # Commented-out since the old downloads aren't available anymore
 # TODO: Consider alternatives
@@ -31,11 +32,28 @@ RUN mkdir -p /home/rhodecode/.rccontrol/cache
 
 WORKDIR /home/rhodecode/.rccontrol/cache
 
-RUN wget https://dls.rhodecode.com/linux/RhodeCodeVCSServer-4.6.1+x86_64-linux_build20170213_1900.tar.bz2
-RUN wget https://dls.rhodecode.com/linux/RhodeCodeCommunity-4.6.1+x86_64-linux_build20170213_1900.tar.bz2
+#RUN wget https://dls.rhodecode.com/linux/RhodeCodeVCSServer-4.6.1+x86_64-linux_build20170213_1900.tar.bz2
+#RUN wget https://dls.rhodecode.com/linux/RhodeCodeCommunity-4.6.1+x86_64-linux_build20170213_1900.tar.bz2
+
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html#offline-upgrading
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/offline-installer.html
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
+RUN wget https://dls.rhodecode.com/linux/MANIFEST
+
+# RUN grep -E 'RhodeCodeControl.*'${ARCH}'-linux' MANIFEST \
+#             | awk '{print $2}' \
+#             | xargs wget
+# NOTE: Separated greps to avoid possible regexp issues with RC_VERSION's dots
+RUN grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
+            | awk '{print $2}' \
+            | xargs echo wget \
+        && grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
+            | awk '{print $2}' \
+            | xargs echo wget
 
 WORKDIR /home/rhodecode
 
+# TODO: Can this be downloaded more transparently?
 RUN wget --content-disposition https://dls-eu.rhodecode.com/dls/NzA2MjdhN2E2ODYxNzY2NzZjNDA2NTc1NjI3MTcyNzA2MjcxNzIyZTcwNjI3YQ==/rhodecode-control/latest-linux-ce
 RUN chmod 755 ./RhodeCode-installer-*
 RUN ./RhodeCode-installer-* --accept-license --create-install-directory
