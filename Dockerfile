@@ -46,10 +46,10 @@ RUN wget https://dls.rhodecode.com/linux/MANIFEST
 # NOTE: Separated greps to avoid possible regexp issues with RC_VERSION's dots
 RUN grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
             | awk '{print $2}' \
-            | xargs echo wget \
+            | xargs wget \
         && grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
             | awk '{print $2}' \
-            | xargs echo wget
+            | xargs wget
 
 WORKDIR /home/rhodecode
 
