@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
-ARG RC_VERSION=4.22
+ARG RC_VERSION=4.22.0
 
 # Commented-out since the old downloads aren't available anymore
 # TODO: Consider alternatives
