@@ -2,17 +2,24 @@ FROM ubuntu:16.04
 
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
-#ARG RCC_VERSION=1.24.2
+# ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
-#ARG MANIFEST=https://dls.rhodecode.com/linux/MANIFEST
 ARG ARCH=x86_64
 
-# Commented-out since the old downloads aren't available anymore
-# TODO: Consider alternatives
+ENV RHODECODE_USER=admin
+ENV RHODECODE_USER_PASS=secret
+ENV RHODECODE_USER_EMAIL=rhodecode-support@example.com
+# NOTE unattended installs only support sqlite (but can be reconfigured later)
+ENV RHODECODE_DB=sqlite
+ENV RHODECODE_REPO_DIR=/home/rhodecode/repo
+ENV RHODECODE_VCS_PORT=3690
+ENV RHODECODE_HTTP_PORT=8080
+ENV RHODECODE_HOST=0.0.0.0
 
 RUN apt-get update \
-        && apt-get -y install \
+        && apt-get -y install --no-install-recommends \
                     bzip2 \
+                    ca-certificates \
                     locales \
                     python \
                     sudo \
@@ -21,80 +28,23 @@ RUN apt-get update \
 
 RUN useradd -ms /bin/bash rhodecode \
         && sudo adduser rhodecode sudo \
-        && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-RUN locale-gen en_US.UTF-8 \
+        && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+        && locale-gen en_US.UTF-8 \
         && update-locale 
 
 USER rhodecode
 
-RUN mkdir -p /home/rhodecode/.rccontrol/cache
+# Split into two scripts in an attempt to increase the chance of it being cached
 
-WORKDIR /home/rhodecode/.rccontrol/cache
+# 1: Just the downloads
+COPY prepare-downloads.bash /tmp
+RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
+        bash /tmp/prepare-downloads.bash
 
-# https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html#offline-upgrading
-# https://docs.rhodecode.com/RhodeCode-Control/tasks/offline-installer.html
-# https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
-RUN wget https://dls.rhodecode.com/linux/MANIFEST
-
-# RUN grep -E 'RhodeCodeControl.*'${ARCH}'-linux' MANIFEST \
-#             | awk '{print $2}' \
-#             | xargs wget
-# NOTE: Separated greps to avoid possible regexp issues with RC_VERSION's dots
-RUN grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
-            | awk '{print $2}' \
-            | xargs wget \
-        && grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
-            | awk '{print $2}' \
-            | xargs wget
-
-WORKDIR /home/rhodecode
-
-# TODO: Can this be downloaded more transparently?
-RUN wget --content-disposition https://dls-eu.rhodecode.com/dls/NzA2MjdhN2E2ODYxNzY2NzZjNDA2NTc1NjI3MTcyNzA2MjcxNzIyZTcwNjI3YQ==/rhodecode-control/latest-linux-ce
-RUN chmod 755 ./RhodeCode-installer-*
-RUN ./RhodeCode-installer-* --accept-license --create-install-directory
-RUN .rccontrol-profile/bin/rccontrol self-init
-
-ENV RHODECODE_USER=admin
-ENV RHODECODE_USER_PASS=secret
-ENV RHODECODE_USER_EMAIL=rhodecode-support@example.com
-ENV RHODECODE_DB=sqlite
-ENV RHODECODE_REPO_DIR=/home/rhodecode/repo
-ENV RHODECODE_VCS_PORT=3690
-ENV RHODECODE_HTTP_PORT=8080
-ENV RHODECODE_HOST=0.0.0.0
-
-RUN mkdir -p /home/rhodecode/repo
-
-RUN .rccontrol-profile/bin/rccontrol install VCSServer \
-        --version ${RC_VERSION} \
-        --accept-license \
-        --offline \
-        '{ "host": "'"$RHODECODE_HOST"'", '\
-        '  "port":'"$RHODECODE_VCS_PORT"'}'
-RUN .rccontrol-profile/bin/rccontrol install Community \
-        --version ${RC_VERSION} \
-        --accept-license \
-        --offline \
-        '{"host":"'"$RHODECODE_HOST"'", '\
-        ' "port":'"$RHODECODE_HTTP_PORT"', '\
-        ' "username":"'"$RHODECODE_USER"'", '\
-        ' "password":"'"$RHODECODE_USER_PASS"'", '\
-        ' "email":"'"$RHODECODE_USER_EMAIL"'", '\
-        ' "repo_dir":"'"$RHODECODE_REPO_DIR"'", '\
-        ' "database": "'"$RHODECODE_DB"'"}'
-
-RUN sed -i \
-    -e 's/start_at_boot = True/start_at_boot = False/g' \
-    -e 's/self_managed_supervisor = False/self_managed_supervisor = True/g' \
-    ~/.rccontrol.ini
-
-#RUN touch .rccontrol/supervisor/rhodecode_config_supervisord.ini
-RUN echo '[supervisord]\nnodaemon = true' >> .rccontrol/supervisor/rhodecode_config_supervisord.ini
-RUN .rccontrol-profile/bin/rccontrol self-stop
-
+# 2: Installation. Note reinstall is modified inside prepare-image.bash
+COPY prepare-image.bash /tmp
 COPY ./container/reinstall.sh /home/rhodecode/
-RUN sed -i 's/^RC_VERSION=.*/RC_VERSION='${RC_VERSION}'/' /home/rhodecode/reinstall.sh
+RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
+        bash /tmp/prepare-image.bash
 
 CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]
