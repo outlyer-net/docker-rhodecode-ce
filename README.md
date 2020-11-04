@@ -24,6 +24,14 @@ First of all clone the repository or download its contents, as instructed on the
 That's it.
 Although you may want to customise the contents of the `docker-compose.yaml` file.
 
+#### Tweaks
+
+* By default the compose file will use `rhodecode` as the name for the container and prefix for generated volumes' names (e.g. `rhodecode_conf`).
+\
+This can be changed by setting the `RHODECODE_CONTAINER_NAME` environment variable before running docker-compose, e.g.:
+
+  $ env RHODECODE_CONTAINER_NAME=reposerver docker-compose up -d
+
 ### Without Docker Compose
 
 To preserve data even when the container is destroyed you must make sure to mount at least these three paths:
