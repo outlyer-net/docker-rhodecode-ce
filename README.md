@@ -45,7 +45,7 @@ To preserve data even when the container is destroyed you must make sure to moun
 Here's an example command-line to spin the container (long options are used for increased readability), named volumes are used in this example to let Docker handle volume creation (care must be taken not to unadvertedly remove the volumes or data will be lost):
 
     $ docker run --detach \
-        --publish 8080:80 \
+        --publish 8080:8080 \
         --volume rhodecode_repos:/home/rhodecode/repos \
         --volume rhodecode_conf:/home/rhodecode/.rccontrol/community-1 \
         --volume rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1 \
@@ -71,7 +71,7 @@ is not automated, you'll have to adjust it yourself.
 
 ## Exposed ports
 
-- `80`: HTTP port on which RhodeCode serves. This port is published to `8080` by default when using `docker-compose`.
+- `8080`: HTTP port on which RhodeCode serves. This port is published by default when using `docker-compose`.
 - `3690`: Subversion protocol (`svn://`) on which svnserve listens. This port isn't published by default.
 
 ## Links
