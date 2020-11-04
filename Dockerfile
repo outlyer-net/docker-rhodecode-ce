@@ -11,7 +11,7 @@ ENV RHODECODE_USER_PASS=secret
 ENV RHODECODE_USER_EMAIL=rhodecode-support@example.com
 # NOTE unattended installs only support sqlite (but can be reconfigured later)
 ENV RHODECODE_DB=sqlite
-ENV RHODECODE_REPO_DIR=/home/rhodecode/repo
+ENV RHODECODE_REPO_DIR=/home/rhodecode/repos
 ENV RHODECODE_VCS_PORT=3690
 ENV RHODECODE_HTTP_PORT=80
 ENV RHODECODE_HOST=0.0.0.0

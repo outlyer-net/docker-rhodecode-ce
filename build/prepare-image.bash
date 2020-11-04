@@ -5,7 +5,7 @@ set -xe
 RC_CONTROLDIR=~/.rccontrol
 RC_CACHEDIR="${RC_CONTROLDIR}/cache"
 RC_CONTROL=~/.rccontrol-profile/bin/rccontrol
-REPOBASEDIR=~/repo
+REPOBASEDIR=~/repos
 
 # Fail early if the required files and directories aren't found
 test -f ~/reinstall.sh
@@ -22,7 +22,7 @@ cd ~
 #rm ./RhodeCode-installer-*
 
 # Important directories:
-# - $RHODECODE_REPO_DIR (/home/rhodecode/repo)
+# - $RHODECODE_REPO_DIR (/home/rhodecode/repos)
 #     Repositories root, one subdir per repository (all different types mixed)
 # - ~/.rccontrol/community-1
 #     RhodeCode CE configuration and logs. The sqlite database is located at ./rhodecode.db

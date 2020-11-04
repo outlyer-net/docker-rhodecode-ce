@@ -16,7 +16,7 @@ services:
       # No point in publishing svnserve's port since svn disabled
       #- "3690:3690"
     volumes:
-      - rhodecode_repos:/home/rhodecode/repo
+      - rhodecode_repos:/home/rhodecode/repos
       - rhodecode_conf:/home/rhodecode/.rccontrol/community-1
       - rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1
     #tmpfs: # TODO: This doesn't work, /run gets mounted but ends up empty
