@@ -12,6 +12,7 @@ services:
       - 3690
     ports:
       - "8080:8080"
-      - "3690:3690"
+      # No point in publishing svnserve's port since svn disabled
+      #- "3690:3690"
     volumes:
      - ./volumes/rhodecode/repo:/home/rhodecode/repo

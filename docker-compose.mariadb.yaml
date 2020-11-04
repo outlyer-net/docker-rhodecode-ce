@@ -25,7 +25,8 @@ services:
       - 3690
     ports:
       - "8080:8080"
-      - "3690:3690"
+      # No point in exposed svnserve's port since svn disabled
+      #- "3690:3690"
     links:
      - db:db
     environment:
