@@ -8,10 +8,10 @@ services:
       context: .
       dockerfile: Dockerfile
     expose:
-      - 8080
+      - 80
       - 3690
     ports:
-      - "8080:8080"
+      - "8080:80"
       # No point in publishing svnserve's port since svn disabled
       #- "3690:3690"
     volumes:
