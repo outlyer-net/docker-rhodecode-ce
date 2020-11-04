@@ -19,6 +19,7 @@ services:
       - rhodecode_repos:/home/rhodecode/repos
       - rhodecode_conf:/home/rhodecode/.rccontrol/community-1
       - rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1
+      - /etc/localtime:/etc/localtime:ro
     #tmpfs: # TODO: This doesn't work, /run gets mounted but ends up empty
       #  - /run
 

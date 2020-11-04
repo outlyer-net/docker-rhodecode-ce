@@ -37,13 +37,15 @@ ENV RHODECODE_HTTP_PORT=8080
 ENV RHODECODE_HOST=0.0.0.0
 
 RUN apt-get update \
-        && apt-get -y install --no-install-recommends \
+        && DEBIAN_FRONTEND=noninteractive \
+                apt-get -y install --no-install-recommends \
                     bzip2 \
                     ca-certificates \
                     locales \
                     python \
                     sudo \
                     supervisor \
+                    tzdata \
                     wget
 
 RUN useradd -ms /bin/bash rhodecode \
