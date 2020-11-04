@@ -11,6 +11,16 @@ FROM ubuntu:18.04
 #    20.04        2025-04               2030-04
 
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
+# Standard(ish) labels/annotations <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
+LABEL org.opencontainers.image.name="Unofficial RhodeCode CE Dockerized"
+LABEL org.opencontainers.image.description="RhodeCode Community Edition is an open\
+source Source Code Management server with support for Git, Mercurial and Subversion\
+(Subversion support is not -yet- enabled in this image, though)"
+LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/outlyernet/rhodecode-ce"
+LABEL org.opencontainers.image.source="https://github.com/outlyer-net/docker-rhodecode-ce"
+#LABEL org.opencontainers.image.licenses= # TODO
+#LABEL org.opencontainers.image.version= # TODO
+
 
 # ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
