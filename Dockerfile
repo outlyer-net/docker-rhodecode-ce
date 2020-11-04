@@ -58,9 +58,12 @@ COPY container/healthcheck.sh /healthcheck
 
 USER rhodecode
 
-#VOLUME ${RHODECODE_REPO_DIR}
-#VOLUME /home/rhodecode/.rccontrol/community-1
-#VOLUME /home/rhodecode/.rccontrol/vcsserver-1
+VOLUME ${RHODECODE_REPO_DIR}
+# These will contain RhodeCode installed files (which are much needed too)
+#  By declaring them as volumes, if a Docker volume is mounted over them their contents
+#  will be copied. However, that apparently doesn't apply to bind mounts.
+VOLUME /home/rhodecode/.rccontrol/community-1
+VOLUME /home/rhodecode/.rccontrol/vcsserver-1
 
 # Split into two scripts in an attempt to increase the chance of it being cached
 
@@ -74,6 +77,11 @@ COPY build/prepare-image.bash /tmp
 COPY ./container/reinstall.sh /home/rhodecode/
 RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
         bash /tmp/prepare-image.bash
+
+COPY container/reset_image.sh /home/rhodecode/
+# Make a backup of the initial data, so that it can be easily restored
+RUN cp -rvpP /home/rhodecode/.rccontrol/community-1 /home/rhodecode/.rccontrol/community-1.dist \
+        && cp -rvpP /home/rhodecode/.rccontrol/vcsserver-1 /home/rhodecode/.rccontrol/vcsserver-1.dist
 
 HEALTHCHECK CMD [ "/healthcheck" ]
 
