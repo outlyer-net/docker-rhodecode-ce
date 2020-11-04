@@ -2,15 +2,16 @@
 
 RC_VERSION=4.22.0
 
-read -r -d '' CONF <<EOF
+# Must conform to JSON, i.e. double quotes
+read -r -d "" CONF <<EOF
 {
-    "host": '$RHODECODE_HOST',
-    "port": '$RHODECODE_HTTP_PORT',
-    "username": '$RHODECODE_USER',
-    "password": '$RHODECODE_USER_PASS',
-    "email": '$RHODECODE_USER_EMAIL',
-    "repo_dir": '$RHODECODE_REPO_DIR',
-    "database": '$RHODECODE_DB'
+    "host": "$RHODECODE_HOST",
+    "port": "$RHODECODE_HTTP_PORT",
+    "username": "$RHODECODE_USER",
+    "password": "$RHODECODE_USER_PASS",
+    "email": "$RHODECODE_USER_EMAIL",
+    "repo_dir": "$RHODECODE_REPO_DIR",
+    "database": "$RHODECODE_DB"
 }
 EOF
 
