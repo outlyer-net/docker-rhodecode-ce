@@ -21,7 +21,6 @@ LABEL org.opencontainers.image.source="https://github.com/outlyer-net/docker-rho
 #LABEL org.opencontainers.image.licenses= # TODO
 #LABEL org.opencontainers.image.version= # TODO
 
-
 # ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
 ARG ARCH=x86_64
@@ -55,8 +54,6 @@ RUN useradd --create-home --shell /bin/bash rhodecode \
 
 COPY container/healthcheck.sh /healthcheck
 
-USER rhodecode
-
 VOLUME ${RHODECODE_REPO_DIR}
 # These will contain RhodeCode installed files (which are much needed too)
 #  By declaring them as volumes, if a Docker volume is mounted over them their contents
@@ -64,7 +61,14 @@ VOLUME ${RHODECODE_REPO_DIR}
 VOLUME /home/rhodecode/.rccontrol/community-1
 VOLUME /home/rhodecode/.rccontrol/vcsserver-1
 
+# Declared volumes are created as root, but must be writable by rhodecode
+RUN chown rhodecode.rhodecode \
+        /home/rhodecode/.rccontrol/community-1 \
+        /home/rhodecode/.rccontrol/vcsserver-1
+
 # Split into two scripts in an attempt to increase the chance of it being cached
+
+USER rhodecode
 
 # 1: Just the downloads
 COPY build/prepare-downloads.bash /tmp
