@@ -1,8 +1,12 @@
-version: '2'
+version: '2.4'
+
+# This is an override file for the base configuration.
+# Use like:
+# $ docker-compose -f docker-compose.yaml -f docker-compose.mariadb.yaml up
 
 services:
   db:
-    container_name: rhodecode_db
+    container_name: ${RHODECODE_CONTAINER_NAME:-rhodecode}_db
     image: mariadb
     environment:
       MYSQL_DATABASE: rhodecode
@@ -10,28 +14,12 @@ services:
       MYSQL_PASSWORD: rhodecode
       MYSQL_ROOT_PASSWORD: rhodecode
     volumes:
-     - /var/lib/mysql
-    volumes:
-     - ./volumes/db:/var/lib/mysql
-
-  rhodecode:
-    container_name: rhodecode
-    image: outlyernet/rhodecode-ce
-    build:
-      context: .
-      dockerfile: Dockerfile
-    expose:
-      - 80
-      - 3690
+      - rhodecode_db:/var/lib/mysql
+  rhodecode: # When used as an override will use the base configuration and merge this with it
     depends_on:
-      - 'db'
-    ports:
-      - "80:8080"
-      # No point in publishing svnserve's port since svn disabled
-      #- "3690:3690"
-    links:
-     - db:db
-    environment:
-      RHODECODE_DB: "mysql://rhodecode:rhodecode@db/rhodecode"
-    volumes:
-     - ./volumes/rhodecode/repo:/home/rhodecode/repo
+      - db
+
+volumes:
+  rhodecode_db: 
+    name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_db"
+

@@ -62,11 +62,11 @@ Both can be changed from the administration panel after login.
 
 By default the an sqlite database is used ([RhodeCode doesn't support unattended
 installs with any other database](https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation)), but it can be set up afterwards.
-An alternative Docker Compose file is provided
+An override Docker Compose file is provided
 to set up a database container alongside RhodeCode, but the post-install set up
 is not automated, you'll have to adjust it yourself.
 
-    $ docker-compose -f docker-compose.mariadb.yaml up
+    $ docker-compose -f docker-compose.yaml -f docker-compose.mariadb.yaml up
     $ # must change the RhodeCode database here
 
 ## Exposed ports
