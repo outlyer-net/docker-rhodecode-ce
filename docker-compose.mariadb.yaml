@@ -23,6 +23,8 @@ services:
     expose:
       - 80
       - 3690
+    depends_on:
+      - 'db'
     ports:
       - "80:8080"
       # No point in publishing svnserve's port since svn disabled
