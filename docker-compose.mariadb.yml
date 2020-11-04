@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  db:
+    container_name: rhodecode_db
+    image: mariadb
+    environment:
+      MYSQL_DATABASE: rhodecode
+      MYSQL_USER: rhodecode
+      MYSQL_PASSWORD: rhodecode
+      MYSQL_ROOT_PASSWORD: rhodecode
+    volumes:
+     - /var/lib/mysql
+    volumes:
+     - ./volumes/db:/var/lib/mysql
+
+  rhodecode:
+    container_name: rhodecode
+    image: outlyernet/rhodecode-ce
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - 8080
+      - 3690
+    ports:
+      - "8080:8080"
+      - "3690:3690"
+    links:
+     - db:db
+    environment:
+      RHODECODE_DB: "mysql://rhodecode:rhodecode@db/rhodecode"
+    volumes:
+     - ./volumes/rhodecode/repo:/home/rhodecode/repo
