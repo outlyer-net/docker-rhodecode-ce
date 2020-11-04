@@ -1,12 +1,10 @@
 version: '2.4'
 
-args:
-
-
 services:
   rhodecode:
     container_name: rhodecode
     image: outlyernet/rhodecode-ce
+    platform: linux # AMD64 RhodeCode by default. IA-32 can be enabled by tweaking the Dockerfile
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,6 +19,8 @@ services:
       - rhodecode_repos:/home/rhodecode/repo
       - rhodecode_conf:/home/rhodecode/.rccontrol/community-1
       - rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1
+    #tmpfs: # TODO: This doesn't work, /run gets mounted but ends up empty
+      #  - /run
 
 # Persist all important data
 volumes:
