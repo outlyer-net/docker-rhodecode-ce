@@ -1,4 +1,14 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
+# Originally based on ubuntu:16.04.
+# RhodeCode provides the relevant binaries so the actual OS
+# version shouldn't make much of a difference.
+#
+# These are Ubuntu's current LTS:
+#   Version   Supported until    Security support until
+#   ----------------------------------------------------
+#    16.04        2021-04               2024-04
+#    18.04        2023-04               2028-04
+#    20.04        2025-04               2030-04
 
 LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
 
