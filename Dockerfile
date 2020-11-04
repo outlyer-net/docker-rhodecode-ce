@@ -48,7 +48,7 @@ RUN apt-get update \
                     tzdata \
                     wget
 
-RUN useradd -ms /bin/bash rhodecode \
+RUN useradd --create-home --shell /bin/bash rhodecode \
         && sudo adduser rhodecode sudo \
         && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
         && locale-gen en_US.UTF-8 \
