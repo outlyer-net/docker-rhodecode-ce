@@ -26,6 +26,9 @@ Although you may want to customise the contents of the `docker-compose.yaml` fil
 
 #### Tweaks
 
+* The compose file will use named docker volumes by default, that will be created on the fly,
+  it may be advisable to change those to bind mounts to ensure they aren't removed accidentally
+  with `docker volume prune`.
 * By default the compose file will use `rhodecode` as the name for the container and prefix for generated volumes' names (e.g. `rhodecode_conf`).
 \
 This can be changed by setting the `RHODECODE_CONTAINER_NAME` environment variable before running docker-compose, e.g.:
