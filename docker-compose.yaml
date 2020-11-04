@@ -1,4 +1,7 @@
-version: '2'
+version: '2.4'
+
+args:
+
 
 services:
   rhodecode:
@@ -15,4 +18,15 @@ services:
       # No point in publishing svnserve's port since svn disabled
       #- "3690:3690"
     volumes:
-     - ./volumes/rhodecode/repo:/home/rhodecode/repo
+      - rhodecode_repos:/home/rhodecode/repo
+      - rhodecode_conf:/home/rhodecode/.rccontrol/community-1
+      - rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1
+
+# Persist all important data
+volumes:
+  rhodecode_repos:      # Repositories are stored here
+    name: "rhodecode_repos"
+  rhodecode_conf:   # RhodeCode's configuration is stored here
+    name: "rhodecode_conf"
+  rhodecode_vcs_conf:   # RhodeCode's VCS configuration is stored here
+    name: "rhodecode_vcs_conf"
