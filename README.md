@@ -1,4 +1,4 @@
-# docker-rhodecode-ce
+# RhodeCode Community Edition in Docker
 
 Docker container for the [RhodeCode](https://rhodecode.com/) Community Edition source code management platform.
 
