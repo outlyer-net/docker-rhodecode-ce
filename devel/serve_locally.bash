@@ -10,6 +10,13 @@ cd "$(dirname "$0")"
 RC_VERSION=$(grep 'ARG RC_VERSION=' ../Dockerfile | cut -d= -f2)
 RC_ARCH=$(grep 'ARG ARCH=' ../Dockerfile | cut -d= -f2)
 
+# Try to reuse the code from build_image_from_devel_cache.bash
+eval "$(grep -m1 -A4 HOST_IP= build_image_from_devel_cache.bash)"
+if [[ -z "$HOST_IP" ]]; then
+    echo "Failed to guess docker ip"
+    exit 1
+fi >&2
+
 if [[ ! -d cache ]]; then
     mkdir cache
 fi
@@ -46,11 +53,12 @@ fi
 #     wget "$RC_CONTROL_URL"
 # fi
 
+SERVER="http://${HOST_IP}:8000"
 # Generate a replacement MANIFEST
 cat >MANIFEST <<-EOF
-	$VCS_MD5 $VCS_FILENAME
-	$RCC_MD5 $RCC_FILENAME
-	$RC_CONTROL_MD5 $RC_CONTROL_FILENAME
+	$VCS_MD5 $SERVER/$VCS_FILENAME
+	$RCC_MD5 $SERVER/$RCC_FILENAME
+	$RC_CONTROL_MD5 $SERVER/$RC_CONTROL_FILENAME
 EOF
 
 echo "Serving files on http://localhost:8000"
