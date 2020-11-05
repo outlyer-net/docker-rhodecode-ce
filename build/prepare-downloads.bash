@@ -11,7 +11,7 @@ cd "${RC_CACHEDIR}"
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html#offline-upgrading
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/offline-installer.html
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
-wget https://dls.rhodecode.com/linux/MANIFEST
+wget $RHODECODE_MANIFEST_URL
 
 # RUN grep -E 'RhodeCodeControl.*'${ARCH}'-linux' MANIFEST \
 #             | awk '{print $2}' \
