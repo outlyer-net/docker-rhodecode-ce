@@ -10,7 +10,14 @@ IMAGE_NAME=${IMAGE_NAME:-rhodecode-devel}
 SCRIPT_DIR="$(dirname "$0")"
 BUILD_CONTEXT=$(realpath "$SCRIPT_DIR/..")
 
+# Try to detect docker's address (to access the host during build)
+HOST_IP=$(ip -4 a show  docker0 scope global \
+                | sed -e '/inet /!d' \
+                | awk '{print $2}' \
+                | cut -d/ -f1
+)
+
 exec docker build -t "$IMAGE_NAME" \
-        --build-arg RHODECODE_MANIFEST_URL="http://localhost:8000/MANIFEST" \
+        --build-arg RHODECODE_MANIFEST_URL="http://$HOST_IP:8000/MANIFEST" \
         "$@" \
         "$BUILD_CONTEXT"
