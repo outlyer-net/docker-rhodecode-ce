@@ -5,6 +5,7 @@ set -xe
 RC_CONTROLDIR=~/.rccontrol
 RC_CACHEDIR="${RC_CONTROLDIR}/cache"
 
+sudo chown -R rhodecode.rhodecode ~
 mkdir -p "${RC_CACHEDIR}"
 cd "${RC_CACHEDIR}"
 
