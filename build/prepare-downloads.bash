@@ -8,10 +8,13 @@ RC_CACHEDIR="${RC_CONTROLDIR}/cache"
 mkdir -p "${RC_CACHEDIR}"
 cd "${RC_CACHEDIR}"
 
+# Avoid producing garbage (specially useful to ease reading Docker Hub's build logs) 
+WGET_OPTS='--progress=dot:giga'
+
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html#offline-upgrading
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/offline-installer.html
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
-wget $RHODECODE_MANIFEST_URL
+wget $WGET_OPTS $RHODECODE_MANIFEST_URL
 
 # RUN grep -E 'RhodeCodeControl.*'${ARCH}'-linux' MANIFEST \
 #             | awk '{print $2}' \
@@ -19,10 +22,10 @@ wget $RHODECODE_MANIFEST_URL
 # NOTE: Separated greps to avoid possible regexp issues with RC_VERSION's dots
 grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
     | awk '{print $2}' \
-    | xargs wget
+    | xargs wget $WGET_OPTS
 grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
     | awk '{print $2}' \
-    | xargs wget
+    | xargs wget $WGET_OPTS
 
 cd ~
 
