@@ -76,8 +76,9 @@ RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
 
 COPY container/reset_image.sh /home/rhodecode/
 # Make a backup of the initial data, so that it can be easily restored
-RUN cp -rvpP /home/rhodecode/.rccontrol/community-1 /home/rhodecode/.rccontrol/community-1.dist \
-        && cp -rvpP /home/rhodecode/.rccontrol/vcsserver-1 /home/rhodecode/.rccontrol/vcsserver-1.dist
+RUN mkdir /home/rhodecode/.rccontrol.dist \
+        && cp -rvpP /home/rhodecode/.rccontrol/community-1 /home/rhodecode/.rccontrol.dist/community-1 \
+        && cp -rvpP /home/rhodecode/.rccontrol/vcsserver-1 /home/rhodecode/.rccontrol.dist/vcsserver-1
 
 # NOTE: Declared VOLUME's will be created at the point they're listed,
 #       Must not create them early to avoid permission issues

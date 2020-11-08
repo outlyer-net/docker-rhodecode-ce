@@ -2,8 +2,8 @@
 
 RC_CONF='/home/rhodecode/.rccontrol/community-1'
 VCS_CONF='/home/rhodecode/.rccontrol/vcsserver-1'
-DIST_RC_CONF="$RC_CONF.dist"
-DIST_VCS_CONF="$VCS_CONF.dist"
+DIST_RC_CONF='/home/rhodecode/.rccontrol.dist/community-1'
+DIST_VCS_CONF='/home/rhodecode/.rccontrol.dist/vcsserver-1'
 
 cat <<EOF
 This script restores the installation data file that RhodeCode generated,
