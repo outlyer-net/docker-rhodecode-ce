@@ -49,6 +49,7 @@ RUN apt-get update \
                     python \
                     sudo \
                     supervisor \
+                    tzdata \
                     wget
 
 RUN useradd --create-home --shell /bin/bash rhodecode \
