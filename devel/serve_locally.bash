@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -xe
+
 # Avoid hammering RhodeCode's servers unnecessarily and waiting for downloads
 #  by caching them and serving locally
 # Files are only downloaded when this script is invoked if they don't already
