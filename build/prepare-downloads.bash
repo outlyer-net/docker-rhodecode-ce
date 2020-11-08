@@ -32,5 +32,6 @@ cd ~
 
 # TODO: Can this be downloaded more transparently?
 # TODO: Can the installer be removed safely afterwards?
+# XXX: This URL is also used in the automation recipes <https://code.rhodecode.com/rhodecode-automation-ce/files/4ea5dcd54ba64245b0e1fea29b9ba29667d366b3/provisioning/ansible/provision_rhodecode_ce_vm.yaml>
 wget --content-disposition https://dls-eu.rhodecode.com/dls/NzA2MjdhN2E2ODYxNzY2NzZjNDA2NTc1NjI3MTcyNzA2MjcxNzIyZTcwNjI3YQ==/rhodecode-control/latest-linux-ce
 chmod 0755 ./RhodeCode-installer-*
