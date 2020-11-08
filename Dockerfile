@@ -63,8 +63,7 @@ COPY container/healthcheck.sh /healthcheck
 USER rhodecode
 
 COPY build/setup-rhodecode.bash /tmp
-RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
-        bash /tmp/setup-rhodecode.bash
+RUN bash /tmp/setup-rhodecode.bash
 
 COPY container/reset_image.sh /home/rhodecode/
 # Make a backup of the initial data, so that it can be easily restored
