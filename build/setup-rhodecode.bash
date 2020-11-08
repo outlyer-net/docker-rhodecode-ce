@@ -32,7 +32,7 @@ grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
 
 cd ~
 
-wget --content-disposition "$RHODECODE_INSTALLER_URL"
+wget --content-disposition $WGET_OPTS "$RHODECODE_INSTALLER_URL"
 chmod 0755 ./RhodeCode-installer-*
 
 # Fail early if the required files and directories aren't found
