@@ -12,6 +12,10 @@ test -f ~/reinstall.sh
 test -f "${RC_CACHEDIR}/RhodeCodeCommunity"*
 test -f "${RC_CACHEDIR}/RhodeCodeVCSServer"*
 test -x ~/RhodeCode-installer-*
+# Ensure the exported directories don't exist yet
+test ! -d "$RC_CONTROLDIR/community-1"
+test ! -d "$RC_CONTROLDIR/vcsserver-1"
+test ! -d "${REPOBASEDIR}"
 
 mkdir -p "${REPOBASEDIR}"
 

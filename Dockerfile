@@ -59,18 +59,6 @@ RUN useradd --create-home --shell /bin/bash rhodecode \
 
 COPY container/healthcheck.sh /healthcheck
 
-VOLUME ${RHODECODE_REPO_DIR}
-# These will contain RhodeCode installed files (which are much needed too)
-#  By declaring them as volumes, if a Docker volume is mounted over them their contents
-#  will be copied. However, that apparently doesn't apply to bind mounts.
-VOLUME /home/rhodecode/.rccontrol/community-1
-VOLUME /home/rhodecode/.rccontrol/vcsserver-1
-
-# Declared volumes are created as root, but must be writable by rhodecode
-RUN chown rhodecode.rhodecode \
-        /home/rhodecode/.rccontrol/community-1 \
-        /home/rhodecode/.rccontrol/vcsserver-1
-
 # Split into two scripts in an attempt to increase the chance of it being cached
 
 USER rhodecode
@@ -90,6 +78,20 @@ COPY container/reset_image.sh /home/rhodecode/
 # Make a backup of the initial data, so that it can be easily restored
 RUN cp -rvpP /home/rhodecode/.rccontrol/community-1 /home/rhodecode/.rccontrol/community-1.dist \
         && cp -rvpP /home/rhodecode/.rccontrol/vcsserver-1 /home/rhodecode/.rccontrol/vcsserver-1.dist
+
+# NOTE: Declared VOLUME's will be created at the point they're listed,
+#       Must not create them early to avoid permission issues
+VOLUME ${RHODECODE_REPO_DIR}
+# These will contain RhodeCode installed files (which are much needed too)
+#  By declaring them as volumes, if a Docker volume is mounted over them their contents
+#  will be copied. However, that apparently doesn't apply to bind mounts.
+VOLUME /home/rhodecode/.rccontrol/community-1
+VOLUME /home/rhodecode/.rccontrol/vcsserver-1
+
+# Declared volumes are created as root, but must be writable by rhodecode
+RUN chown rhodecode.rhodecode \
+        /home/rhodecode/.rccontrol/community-1 \
+        /home/rhodecode/.rccontrol/vcsserver-1
 
 HEALTHCHECK CMD [ "/healthcheck" ]
 
