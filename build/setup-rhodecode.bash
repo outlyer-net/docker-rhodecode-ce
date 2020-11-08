@@ -7,11 +7,37 @@ RC_CACHEDIR="${RC_CONTROLDIR}/cache"
 RC_CONTROL=~/.rccontrol-profile/bin/rccontrol
 REPOBASEDIR=~/repos
 
+sudo chown -R rhodecode.rhodecode ~
+mkdir -p "${RC_CACHEDIR}"
+cd "${RC_CACHEDIR}"
+
+# Avoid producing garbage (specially useful to ease reading Docker Hub's build logs) 
+WGET_OPTS='--progress=dot:giga'
+
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/upgrade-rcc.html#offline-upgrading
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/offline-installer.html
+# https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
+wget $WGET_OPTS $RHODECODE_MANIFEST_URL
+
+# RUN grep -E 'RhodeCodeControl.*'${ARCH}'-linux' MANIFEST \
+#             | awk '{print $2}' \
+#             | xargs wget
+# NOTE: Separated greps to avoid possible regexp issues with RC_VERSION's dots
+grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
+    | awk '{print $2}' \
+    | xargs wget $WGET_OPTS
+grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
+    | awk '{print $2}' \
+    | xargs wget $WGET_OPTS
+
+cd ~
+
+wget --content-disposition "$RHODECODE_INSTALLER_URL"
+chmod 0755 ./RhodeCode-installer-*
+
 # Fail early if the required files and directories aren't found
-test -f ~/reinstall.sh
 test -f "${RC_CACHEDIR}/RhodeCodeCommunity"*
 test -f "${RC_CACHEDIR}/RhodeCodeVCSServer"*
-test -x ~/RhodeCode-installer-*
 # Ensure the exported directories don't exist yet
 test ! -d "$RC_CONTROLDIR/community-1"
 test ! -d "$RC_CONTROLDIR/vcsserver-1"
@@ -19,7 +45,6 @@ test ! -d "${REPOBASEDIR}"
 
 mkdir -p "${REPOBASEDIR}"
 
-cd ~
 ./RhodeCode-installer-* --accept-license --create-install-directory
 "${RC_CONTROL}" self-init
 # No point in removing while it's downloaded on a different layer
@@ -34,8 +59,8 @@ cd ~
 #     RhodeCode's VCS Server configuration and logs
 # NOTE ~/.rccontrol/ also includes cache/ and supervisor/, which I see no point in exporting
 
-# NOTE RhodeCode-installer won't install to symlinked directories!
-#      RhodeCode appears to run ok, if the directories are moved around  
+# NOTE RhodeCode-installer failed when installing to symlinked directories!
+#      RhodeCode appears to run ok, if the directories are moved around afterwards
 
 ${RC_CONTROL} install VCSServer \
         --version ${RC_VERSION} \
@@ -60,10 +85,11 @@ sed -i \
     -e 's/self_managed_supervisor = False/self_managed_supervisor = True/g' \
     ~/.rccontrol.ini
 
-#touch .rccontrol/supervisor/rhodecode_config_supervisord.ini
 echo -e '[supervisord]\nnodaemon = true' >> ${RC_CONTROLDIR}/supervisor/rhodecode_config_supervisord.ini
 ${RC_CONTROL} self-stop
 
 echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
 
-sed -i 's/^RC_VERSION=.*/RC_VERSION='${RC_VERSION}'/' ~/reinstall.sh
+# Remove unnecessary installation files
+rm ~/RhodeCode-installer-*
+rm "$RC_CACHEDIR"/*.bz2

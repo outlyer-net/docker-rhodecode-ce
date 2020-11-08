@@ -60,20 +60,11 @@ RUN useradd --create-home --shell /bin/bash rhodecode \
 
 COPY container/healthcheck.sh /healthcheck
 
-# Split into two scripts in an attempt to increase the chance of it being cached
-
 USER rhodecode
 
-# 1: Just the downloads
-COPY build/prepare-downloads.bash /tmp
+COPY build/setup-rhodecode.bash /tmp
 RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
-        bash /tmp/prepare-downloads.bash
-
-# 2: Installation. Note reinstall is modified inside prepare-image.bash
-COPY build/prepare-image.bash /tmp
-COPY ./container/reinstall.sh /home/rhodecode/
-RUN env RC_VERSION=${RC_VERSION} ARCH=${ARCH} \
-        bash /tmp/prepare-image.bash
+        bash /tmp/setup-rhodecode.bash
 
 COPY container/reset_image.sh /home/rhodecode/
 # Make a backup of the initial data, so that it can be easily restored
