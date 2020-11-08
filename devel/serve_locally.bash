@@ -29,6 +29,12 @@ cd cache
 if [[ ! -f MANIFEST.upstream ]]; then
     wget -O MANIFEST.upstream https://dls.rhodecode.com/linux/MANIFEST
 fi
+if ! ls RhodeCode-installer-* >&2 2>/dev/null ; then
+    wget --content-disposition https://dls-eu.rhodecode.com/dls/NzA2MjdhN2E2ODYxNzY2NzZjNDA2NTc1NjI3MTcyNzA2MjcxNzIyZTcwNjI3YQ==/rhodecode-control/latest-linux-ce
+fi
+RC_INSTALLER=$(ls RhodeCode-installer* | head -1)
+chmod 0755 "$RC_INSTALLER"
+RC_INSTALLER_MD5=$(md5sum "$RC_INSTALLER" | awk '{print $1}')
 
 VCS=$(grep "RhodeCodeVCSServer-${RC_VERSION}+${RC_ARCH}-linux.*" MANIFEST.upstream)
 VCS_URL=$(awk '{print $2}' <<<"$VCS")
@@ -55,12 +61,16 @@ fi
 #     wget "$RC_CONTROL_URL"
 # fi
 
+# NOTE: The installer isn't included in the manifest, it must be downloaded
+#       from RhodeCode's user area, I'm including it in the generated manifest
+#       for easier debugging
 SERVER="http://${HOST_IP}:8000"
 # Generate a replacement MANIFEST
 cat >MANIFEST <<-EOF
 	$VCS_MD5 $SERVER/$VCS_FILENAME
 	$RCC_MD5 $SERVER/$RCC_FILENAME
 	$RC_CONTROL_MD5 $SERVER/$RC_CONTROL_FILENAME
+	$RC_INSTALLER_MD5 $SERVER/$RC_INSTALLER
 EOF
 
 echo "Serving files on http://localhost:8000"
