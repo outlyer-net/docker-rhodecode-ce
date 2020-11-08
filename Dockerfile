@@ -96,4 +96,6 @@ RUN chown rhodecode.rhodecode \
 HEALTHCHECK CMD [ "/healthcheck" ]
 
 WORKDIR /home/rhodecode
-CMD ["supervisord", "-c", ".rccontrol/supervisor/supervisord.ini"]
+COPY container/entrypoint.sh /entrypoint
+
+CMD [ "/entrypoint" ]
