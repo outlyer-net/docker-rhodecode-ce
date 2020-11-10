@@ -110,7 +110,16 @@ sed -i \
 echo -e '[supervisord]\nnodaemon = true' >> ${RHODECODE_INSTALL_DIR}/supervisor/rhodecode_config_supervisord.ini
 ${RC_CONTROL} self-stop --install-dir "${RHODECODE_INSTALL_DIR}"
 
-echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
+#echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
+
+# TODO: can rccontrol pick up the install dir otherwise?
+cat | sudo tee /usr/local/bin/rccontrol <<EOF
+#!/bin/sh
+exec "$HOME/.rccontrol-profile/bin/rccontrol" \
+    --install-dir="$RHODECODE_INSTALL_DIR" \
+    "\$@"
+EOF
+sudo chmod 0755 /usr/local/bin/rccontrol
 
 # Remove unnecessary installation files
 rm "${RC_CACHEDIR}"/RhodeCode-installer-*
