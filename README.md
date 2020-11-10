@@ -38,7 +38,7 @@ This can be changed by setting the `RHODECODE_CONTAINER_NAME` environment variab
 
 ### Without Docker Compose
 
-To preserve data even when the container is destroyed you must make sure to mount at least these three paths:
+To preserve data even when the container is destroyed you must make sure to mount at least these paths:
    - `/repos` → The actual repositories
    - `/rhodecode` → RhodeCode configuration and logs
 
