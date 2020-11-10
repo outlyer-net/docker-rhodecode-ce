@@ -3,7 +3,7 @@ version: '2.4'
 services:
   rhodecode:
     container_name: ${RHODECODE_CONTAINER_NAME:-rhodecode}
-    image: outlyernet/rhodecode-ce
+    image: outlyernet/rhodecode-ce:${RHODECODE_CONTAINER_LABEL:-latest}
     platform: linux # AMD64 RhodeCode by default. IA-32 can be enabled by tweaking the Dockerfile
     build:
       context: .
@@ -16,9 +16,8 @@ services:
       # No point in publishing svnserve's port since svn disabled
       #- "3690:3690"
     volumes:
-      - rhodecode_repos:/home/rhodecode/repos
-      - rhodecode_conf:/home/rhodecode/.rccontrol/community-1
-      - rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1
+      - rhodecode_repos:/repos
+      - rhodecode_data:/rhodecode
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     #tmpfs: # TODO: This doesn't work, /run gets mounted but ends up empty
@@ -28,7 +27,5 @@ services:
 volumes:
   rhodecode_repos:      # Repositories are stored here
     name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_repos"
-  rhodecode_conf:   # RhodeCode's configuration is stored here
-    name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_conf"
-  rhodecode_vcs_conf:   # RhodeCode's VCS configuration is stored here
-    name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_vcs_conf"
+  rhodecode_data:       # RhodeCode's configuration is stored here
+    name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_data"
