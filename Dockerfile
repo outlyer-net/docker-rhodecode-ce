@@ -59,14 +59,17 @@ RUN useradd --create-home --shell /bin/bash rhodecode \
         && locale-gen en_US.UTF-8 \
         && update-locale
 
-COPY container/healthcheck.sh /healthcheck
+COPY --chown=0:0 \
+        container/healthcheck \
+        container/entrypoint \
+        container/reset_image \
+        /
+COPY --chown=0:0 build/setup-rhodecode.bash /tmp
 
 USER rhodecode
 
-COPY build/setup-rhodecode.bash /tmp
 RUN bash /tmp/setup-rhodecode.bash
 
-COPY container/reset_image.sh /home/rhodecode/
 # Make a backup of the initial data, so that it can be easily restored
 RUN mkdir /home/rhodecode/.rccontrol.dist \
         && cp -rvpP ${RHODECODE_INSTALL_DIR}/community-1 /home/rhodecode/.rccontrol.dist/community-1 \
@@ -83,12 +86,10 @@ VOLUME ${RHODECODE_INSTALL_DIR}
 # Declared volumes are created as root, but must be writable by rhodecode
 RUN chown rhodecode.rhodecode \
         ${RHODECODE_REPO_DIR} \
-        ${RHODECODE_INSTALL_DIR}/community-1 \
-        ${RHODECODE_INSTALL_DIR}/vcsserver-1
+        ${RHODECODE_INSTALL_DIR}
 
 HEALTHCHECK CMD [ "/healthcheck" ]
 
 WORKDIR /home/rhodecode
-COPY container/entrypoint.sh /entrypoint
 
 CMD [ "/entrypoint" ]
