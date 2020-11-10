@@ -10,14 +10,14 @@ FROM ubuntu:18.04
 #    18.04        2023-04               2028-04
 #    20.04        2025-04               2030-04
 
-LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
-# Standard(ish) labels/annotations <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
-LABEL org.opencontainers.image.name="Unofficial RhodeCode CE Dockerized"
-LABEL org.opencontainers.image.description="RhodeCode Community Edition is an open\
+# Standard(ish) labels/annotations (org.opencontainers.*) <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
+LABEL maintainer="Toni Corvera <outlyer@gmail.com>" \
+      org.opencontainers.image.name="Unofficial RhodeCode CE Dockerized" \
+      org.opencontainers.image.description="RhodeCode Community Edition is an open\
 source Source Code Management server with support for Git, Mercurial and Subversion\
-(Subversion support is not -yet- enabled in this image, though)"
-LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/outlyernet/rhodecode-ce"
-LABEL org.opencontainers.image.source="https://github.com/outlyer-net/docker-rhodecode-ce"
+(Subversion support is not -yet- enabled in this image, though)" \
+      org.opencontainers.image.url="https://hub.docker.com/repository/docker/outlyernet/rhodecode-ce" \
+      org.opencontainers.image.source="https://github.com/outlyer-net/docker-rhodecode-ce"
 #LABEL org.opencontainers.image.licenses= # TODO
 #LABEL org.opencontainers.image.version= # TODO
 
