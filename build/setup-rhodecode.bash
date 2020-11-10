@@ -20,14 +20,14 @@ WGET_OPTS='--progress=dot:giga'
 # https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation
 wget $WGET_OPTS $RHODECODE_MANIFEST_URL
 
-# RUN grep -E 'RhodeCodeControl.*'${ARCH}'-linux' MANIFEST \
+# RUN grep -E 'RhodeCodeControl.*'${RC_ARCH}'-linux' MANIFEST \
 #             | awk '{print $2}' \
 #             | xargs wget
 # NOTE: Separated greps to avoid possible regexp issues with RC_VERSION's dots
-grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
+grep 'RhodeCodeVCSServer-'${RC_VERSION}'+'${RC_ARCH}'-linux' MANIFEST \
     | awk '{print $2}' \
     | xargs wget $WGET_OPTS
-grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
+grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${RC_ARCH}'-linux' MANIFEST \
     | awk '{print $2}' \
     | xargs wget $WGET_OPTS
 

@@ -23,7 +23,7 @@ LABEL org.opencontainers.image.source="https://github.com/outlyer-net/docker-rho
 
 # ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
-ARG ARCH=x86_64
+ARG RC_ARCH=x86_64
 # Allow overriding the manifest URL (for development purposes)
 ARG RHODECODE_MANIFEST_URL="https://dls.rhodecode.com/linux/MANIFEST"
 # TODO: Can this be downloaded more transparently?
