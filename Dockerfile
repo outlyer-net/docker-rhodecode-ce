@@ -73,7 +73,7 @@ RUN bash /tmp/setup-rhodecode.bash
 
 # Make a backup of the initial data, so that it can be easily restored
 RUN sudo mkdir /.rhodecode.dist \
-        && sudo cp -rvpP ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
+        && sudo cp -rvpPT ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
 
 # NOTE: Declared VOLUME's will be created at the point they're listed,
 #       Must not create them early to avoid permission issues
