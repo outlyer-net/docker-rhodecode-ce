@@ -21,6 +21,25 @@ LABEL org.opencontainers.image.source="https://github.com/outlyer-net/docker-rho
 #LABEL org.opencontainers.image.licenses= # TODO
 #LABEL org.opencontainers.image.version= # TODO
 
+# Run before ENVs and ARGs, no need to pass all that environment (may help with caching)
+RUN apt-get update \
+        && DEBIAN_FRONTEND=noninteractive \
+                apt-get -y install --no-install-recommends \
+                    bzip2 \
+                    ca-certificates \
+                    locales \
+                    python \
+                    sudo \
+                    supervisor \
+                    tzdata \
+                    wget
+
+RUN useradd --create-home --shell /bin/bash rhodecode \
+        && sudo adduser rhodecode sudo \
+        && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+        && locale-gen en_US.UTF-8 \
+        && update-locale
+
 # ARG RCC_VERSION=1.24.2
 ARG RC_VERSION=4.22.0
 ARG RC_ARCH=x86_64
@@ -40,24 +59,6 @@ ENV RHODECODE_USER=admin \
     RHODECODE_HOST=0.0.0.0 \
     RHODECODE_REPO_DIR=/repos \
     RHODECODE_INSTALL_DIR=/rhodecode
-
-RUN apt-get update \
-        && DEBIAN_FRONTEND=noninteractive \
-                apt-get -y install --no-install-recommends \
-                    bzip2 \
-                    ca-certificates \
-                    locales \
-                    python \
-                    sudo \
-                    supervisor \
-                    tzdata \
-                    wget
-
-RUN useradd --create-home --shell /bin/bash rhodecode \
-        && sudo adduser rhodecode sudo \
-        && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-        && locale-gen en_US.UTF-8 \
-        && update-locale
 
 COPY --chown=0:0 \
         container/healthcheck \
