@@ -93,4 +93,6 @@ HEALTHCHECK CMD [ "/healthcheck" ]
 
 WORKDIR /home/rhodecode
 
+EXPOSE 8080 3690
+
 CMD [ "/entrypoint" ]
