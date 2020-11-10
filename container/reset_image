@@ -1,13 +1,12 @@
 #!/bin/bash
 
-RC_CONF="$RHODECODE_INSTALL_DIR"
 DIST_RC_CONF='/.rhodecode.dist'
 
 cat >&2 <<EOF
 This script restores the installation data files that RhodeCode generated,
  in case you're mounting something over the corresponding directory.
 
- $RC_CONF
+ $RHODECODE_INSTALL_DIR
 
 If your configuration has somehow become corrupt this script will be of no use
  and it would be a better option to just recreate the container.
@@ -33,4 +32,4 @@ if [[ ! -d "$DIST_RC_CONF" ]]; then
     exit 2
 fi >&2
 
-cp -rvpPT "$DIST_RC_CONF" "$RC_CONF"
+exec cp -rvpPT "$DIST_RC_CONF" "$RHODECODE_INSTALL_DIR"
