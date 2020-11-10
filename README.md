@@ -1,3 +1,10 @@
+<!-- shields.io -->
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/outlyernet/rhodecode-ce)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/outlyernet/rhodecode-ce)
+![MicroBadger Layers](https://img.shields.io/microbadger/layers/outlyernet/rhodecode-ce)
+![GitHub last commit](https://img.shields.io/github/last-commit/outlyer-net/docker-rhodecode-ce)
+![GitHub](https://img.shields.io/github/license/outlyer-net/docker-rhodecode-ce)
+
 # RhodeCode Community Edition in Docker
 
 Docker container for the [RhodeCode](https://rhodecode.com/) Community Edition source code management platform.
