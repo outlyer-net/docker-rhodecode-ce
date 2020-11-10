@@ -35,7 +35,7 @@ ENV RHODECODE_USER_PASS=secret
 ENV RHODECODE_USER_EMAIL=rhodecode-support@example.com
 # NOTE unattended installs only support sqlite (but can be reconfigured later)
 ENV RHODECODE_DB=sqlite
-ENV RHODECODE_REPO_DIR=/home/rhodecode/repos
+ENV RHODECODE_REPO_DIR=/repos
 ENV RHODECODE_VCS_PORT=3690
 ENV RHODECODE_HTTP_PORT=8080
 ENV RHODECODE_HOST=0.0.0.0
@@ -83,6 +83,7 @@ VOLUME ${RHODECODE_INSTALL_DIR}/vcsserver-1
 
 # Declared volumes are created as root, but must be writable by rhodecode
 RUN chown rhodecode.rhodecode \
+        ${RHODECODE_REPO_DIR} \
         ${RHODECODE_INSTALL_DIR}/community-1 \
         ${RHODECODE_INSTALL_DIR}/vcsserver-1
 

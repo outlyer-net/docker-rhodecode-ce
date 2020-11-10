@@ -5,7 +5,6 @@ set -xe
 RC_CONTROLDIR=~/.rccontrol
 RC_CACHEDIR="${RHODECODE_INSTALL_DIR}/cache"
 RC_CONTROL=~/.rccontrol-profile/bin/rccontrol
-REPOBASEDIR=~/repos
 
 sudo chown -R rhodecode.rhodecode ~
 sudo mkdir ${RHODECODE_INSTALL_DIR}
@@ -41,9 +40,10 @@ test -f "${RC_CACHEDIR}/RhodeCodeVCSServer"*
 # Ensure the exported directories don't exist yet
 test ! -d "${RHODECODE_INSTALL_DIR}/community-1"
 test ! -d "${RHODECODE_INSTALL_DIR}/vcsserver-1"
-test ! -d "${REPOBASEDIR}"
+test ! -d "${RHODECODE_REPO_DIR}"
 
-mkdir -p "${REPOBASEDIR}"
+sudo mkdir -p "${RHODECODE_REPO_DIR}"
+sudo chown rhodecode.rhodecode "${RHODECODE_REPO_DIR}"
 
 # RhodeCode-installer creates
 # - $HOME/.rccontrol/
@@ -66,7 +66,7 @@ sudo chown root.root /etc/profile.d/*rhodecode*
 "${RC_CONTROL}" --install-dir="${RHODECODE_INSTALL_DIR}" self-init
 
 # Important directories:
-# - $RHODECODE_REPO_DIR (/home/rhodecode/repos)
+# - $RHODECODE_REPO_DIR (/repos)
 #     Repositories root, one subdir per repository (all different types mixed)
 # - /rhodecode/community-1 (by default ~/.rccontrol/community-1)
 #     RhodeCode CE configuration and logs. The sqlite database is located at ./rhodecode.db
@@ -98,7 +98,7 @@ ${RC_CONTROL} install Community \
         ' "database": "'"$RHODECODE_DB"'"}'
 
 # supervisord.ini is partially set up, but the log and pid file paths must be rewritten
-sed -i -e "s!$RHODECODE_INSTALL_DIR/.rccontrol/supervisor/supervisord.!$RHODECODE_INSTALL_DIR/supervisor/supervisord.!" \
+sed -i -e "s!$RHODECODE_INSTALL_DIR/.rccontrol/supervisoFr/supervisord.!$RHODECODE_INSTALL_DIR/supervisor/supervisord.!" \
     "${RHODECODE_INSTALL_DIR}"/supervisor/supervisord.ini
 
 # TODO: should this be in ~ or in $RHODECODE_INSTALL_DIR ?
