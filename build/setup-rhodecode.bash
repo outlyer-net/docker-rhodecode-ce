@@ -32,8 +32,6 @@ grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
     | awk '{print $2}' \
     | xargs wget $WGET_OPTS
 
-#cd ~
-
 wget --content-disposition $WGET_OPTS "$RHODECODE_INSTALLER_URL"
 chmod 0755 ./RhodeCode-installer-*
 
@@ -66,8 +64,6 @@ sudo mv -v "${RHODECODE_INSTALL_DIR}"/.profile /etc/profile.d/99-rhodecode-path.
 sudo chown root.root /etc/profile.d/*rhodecode*
 
 "${RC_CONTROL}" --install-dir="${RHODECODE_INSTALL_DIR}" self-init
-# No point in removing while it's downloaded on a different layer
-#rm ./RhodeCode-installer-*
 
 # Important directories:
 # - $RHODECODE_REPO_DIR (/home/rhodecode/repos)
