@@ -3,7 +3,7 @@ version: '2.4'
 services:
   rhodecode:
     container_name: ${RHODECODE_CONTAINER_NAME:-rhodecode}
-    image: outlyernet/rhodecode-ce
+    image: outlyernet/rhodecode-ce:${RHODECODE_CONTAINER_LABEL:-latest}
     platform: linux # AMD64 RhodeCode by default. IA-32 can be enabled by tweaking the Dockerfile
     build:
       context: .
@@ -27,5 +27,5 @@ services:
 volumes:
   rhodecode_repos:      # Repositories are stored here
     name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_repos"
-  rhodecode_data:   # RhodeCode's configuration is stored here
+  rhodecode_data:       # RhodeCode's configuration is stored here
     name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_data"
