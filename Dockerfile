@@ -72,9 +72,8 @@ USER rhodecode
 RUN bash /tmp/setup-rhodecode.bash
 
 # Make a backup of the initial data, so that it can be easily restored
-RUN mkdir /home/rhodecode/.rccontrol.dist \
-        && cp -rvpP ${RHODECODE_INSTALL_DIR}/community-1 /home/rhodecode/.rccontrol.dist/community-1 \
-        && cp -rvpP ${RHODECODE_INSTALL_DIR}/vcsserver-1 /home/rhodecode/.rccontrol.dist/vcsserver-1
+RUN sudo mkdir /.rhodecode.dist \
+        && sudo cp -rvpP ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
 
 # NOTE: Declared VOLUME's will be created at the point they're listed,
 #       Must not create them early to avoid permission issues
