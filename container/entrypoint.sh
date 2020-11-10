@@ -2,8 +2,8 @@
 
 # Fix ownership on each invocation
 sudo chown -R `id -u`.`id -g` \
-    ~/.rccontrol/community-1 \
-    ~/.rccontrol/vcsserver-1 \
+    ${RHODECODE_INSTALL_DIR}/community-1 \
+    ${RHODECODE_INSTALL_DIR}/vcsserver-1 \
     ~/repos
 
-exec supervisord -c ~/.rccontrol/supervisor/supervisord.ini
+exec supervisord -c ${RHODECODE_INSTALL_DIR}/supervisor/supervisord.ini

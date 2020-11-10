@@ -3,11 +3,13 @@
 set -xe
 
 RC_CONTROLDIR=~/.rccontrol
-RC_CACHEDIR="${RC_CONTROLDIR}/cache"
+RC_CACHEDIR="${RHODECODE_INSTALL_DIR}/cache"
 RC_CONTROL=~/.rccontrol-profile/bin/rccontrol
 REPOBASEDIR=~/repos
 
 sudo chown -R rhodecode.rhodecode ~
+sudo mkdir ${RHODECODE_INSTALL_DIR}
+sudo chown rhodecode.rhodecode ${RHODECODE_INSTALL_DIR}
 mkdir -p "${RC_CACHEDIR}"
 cd "${RC_CACHEDIR}"
 
@@ -30,7 +32,7 @@ grep 'RhodeCodeCommunity-'${RC_VERSION}'+'${ARCH}'-linux' MANIFEST \
     | awk '{print $2}' \
     | xargs wget $WGET_OPTS
 
-cd ~
+#cd ~
 
 wget --content-disposition $WGET_OPTS "$RHODECODE_INSTALLER_URL"
 chmod 0755 ./RhodeCode-installer-*
@@ -39,23 +41,40 @@ chmod 0755 ./RhodeCode-installer-*
 test -f "${RC_CACHEDIR}/RhodeCodeCommunity"*
 test -f "${RC_CACHEDIR}/RhodeCodeVCSServer"*
 # Ensure the exported directories don't exist yet
-test ! -d "$RC_CONTROLDIR/community-1"
-test ! -d "$RC_CONTROLDIR/vcsserver-1"
+test ! -d "${RHODECODE_INSTALL_DIR}/community-1"
+test ! -d "${RHODECODE_INSTALL_DIR}/vcsserver-1"
 test ! -d "${REPOBASEDIR}"
 
 mkdir -p "${REPOBASEDIR}"
 
-./RhodeCode-installer-* --accept-license --create-install-directory
-"${RC_CONTROL}" self-init
+# RhodeCode-installer creates
+# - $HOME/.rccontrol/
+#     - $HOME/.rccontrol/cache/MANIFEST
+#     - $HOME/.rccontrol/supervisor/supervisord.* (also created by rccontrol install)
+# - $HOME/.rccontrol-profile (symlink to /opt/rhodecode/store...)
+# - $HOME/.profile: adds .rccontrol-profile/bin to path
+# But it doesn't appear to allow setting target directory manually and
+#  will use $HOME, override it temporarily...
+env HOME="${RHODECODE_INSTALL_DIR}" \
+    ./RhodeCode-installer-* --accept-license --create-install-directory
+# ... And move files around manually
+mv -v "${RHODECODE_INSTALL_DIR}"/.rccontrol/cache/MANIFEST "${RHODECODE_INSTALL_DIR}"/cache/
+mv -v "${RHODECODE_INSTALL_DIR}"/.rccontrol/supervisor "${RHODECODE_INSTALL_DIR}"/supervisor
+mv -v "${RHODECODE_INSTALL_DIR}"/.rccontrol-profile "${HOME}"/
+rmdir -v "${RHODECODE_INSTALL_DIR}"/.rccontrol{/cache,/}
+sudo mv -v "${RHODECODE_INSTALL_DIR}"/.profile /etc/profile.d/99-rhodecode-path.sh
+sudo chown root.root /etc/profile.d/*rhodecode*
+
+"${RC_CONTROL}" --install-dir="${RHODECODE_INSTALL_DIR}" self-init
 # No point in removing while it's downloaded on a different layer
 #rm ./RhodeCode-installer-*
 
 # Important directories:
 # - $RHODECODE_REPO_DIR (/home/rhodecode/repos)
 #     Repositories root, one subdir per repository (all different types mixed)
-# - ~/.rccontrol/community-1
+# - /rhodecode/community-1 (by default ~/.rccontrol/community-1)
 #     RhodeCode CE configuration and logs. The sqlite database is located at ./rhodecode.db
-# - ~/.rccontrol/vcsserver-1
+# - /rhodecode/vcsserver-1 (by default ~/.rccontrol/vcsserver-1)
 #     RhodeCode's VCS Server configuration and logs
 # NOTE ~/.rccontrol/ also includes cache/ and supervisor/, which I see no point in exporting
 
@@ -66,12 +85,14 @@ ${RC_CONTROL} install VCSServer \
         --version ${RC_VERSION} \
         --accept-license \
         --offline \
+        --install-dir "${RHODECODE_INSTALL_DIR}" \
         '{ "host": "'"$RHODECODE_HOST"'", '\
         '  "port":'"$RHODECODE_VCS_PORT"'}'
 ${RC_CONTROL} install Community \
         --version ${RC_VERSION} \
         --accept-license \
         --offline \
+        --install-dir "${RHODECODE_INSTALL_DIR}" \
         '{"host":"'"$RHODECODE_HOST"'", '\
         ' "port":'"$RHODECODE_HTTP_PORT"', '\
         ' "username":"'"$RHODECODE_USER"'", '\
@@ -80,16 +101,21 @@ ${RC_CONTROL} install Community \
         ' "repo_dir":"'"$RHODECODE_REPO_DIR"'", '\
         ' "database": "'"$RHODECODE_DB"'"}'
 
+# supervisord.ini is partially set up, but the log and pid file paths must be rewritten
+sed -i -e "s!$RHODECODE_INSTALL_DIR/.rccontrol/supervisor/supervisord.!$RHODECODE_INSTALL_DIR/supervisor/supervisord.!" \
+    "${RHODECODE_INSTALL_DIR}"/supervisor/supervisord.ini
+
+# TODO: should this be in ~ or in $RHODECODE_INSTALL_DIR ?
 sed -i \
     -e 's/start_at_boot = True/start_at_boot = False/g' \
     -e 's/self_managed_supervisor = False/self_managed_supervisor = True/g' \
     ~/.rccontrol.ini
 
-echo -e '[supervisord]\nnodaemon = true' >> ${RC_CONTROLDIR}/supervisor/rhodecode_config_supervisord.ini
-${RC_CONTROL} self-stop
+echo -e '[supervisord]\nnodaemon = true' >> ${RHODECODE_INSTALL_DIR}/supervisor/rhodecode_config_supervisord.ini
+${RC_CONTROL} self-stop --install-dir "${RHODECODE_INSTALL_DIR}"
 
 echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
 
 # Remove unnecessary installation files
-rm ~/RhodeCode-installer-*
-rm "$RC_CACHEDIR"/*.bz2
+rm "${RC_CACHEDIR}"/RhodeCode-installer-*
+rm "${RC_CACHEDIR}"/*.bz2

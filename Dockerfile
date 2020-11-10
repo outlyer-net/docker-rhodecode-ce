@@ -39,6 +39,7 @@ ENV RHODECODE_REPO_DIR=/home/rhodecode/repos
 ENV RHODECODE_VCS_PORT=3690
 ENV RHODECODE_HTTP_PORT=8080
 ENV RHODECODE_HOST=0.0.0.0
+ENV RHODECODE_INSTALL_DIR=/rhodecode
 
 RUN apt-get update \
         && DEBIAN_FRONTEND=noninteractive \
@@ -68,8 +69,8 @@ RUN bash /tmp/setup-rhodecode.bash
 COPY container/reset_image.sh /home/rhodecode/
 # Make a backup of the initial data, so that it can be easily restored
 RUN mkdir /home/rhodecode/.rccontrol.dist \
-        && cp -rvpP /home/rhodecode/.rccontrol/community-1 /home/rhodecode/.rccontrol.dist/community-1 \
-        && cp -rvpP /home/rhodecode/.rccontrol/vcsserver-1 /home/rhodecode/.rccontrol.dist/vcsserver-1
+        && cp -rvpP ${RHODECODE_INSTALL_DIR}/community-1 /home/rhodecode/.rccontrol.dist/community-1 \
+        && cp -rvpP ${RHODECODE_INSTALL_DIR}/vcsserver-1 /home/rhodecode/.rccontrol.dist/vcsserver-1
 
 # NOTE: Declared VOLUME's will be created at the point they're listed,
 #       Must not create them early to avoid permission issues
@@ -77,13 +78,13 @@ VOLUME ${RHODECODE_REPO_DIR}
 # These will contain RhodeCode installed files (which are much needed too)
 #  By declaring them as volumes, if a Docker volume is mounted over them their contents
 #  will be copied. However, that apparently doesn't apply to bind mounts.
-VOLUME /home/rhodecode/.rccontrol/community-1
-VOLUME /home/rhodecode/.rccontrol/vcsserver-1
+VOLUME ${RHODECODE_INSTALL_DIR}/community-1
+VOLUME ${RHODECODE_INSTALL_DIR}/vcsserver-1
 
 # Declared volumes are created as root, but must be writable by rhodecode
 RUN chown rhodecode.rhodecode \
-        /home/rhodecode/.rccontrol/community-1 \
-        /home/rhodecode/.rccontrol/vcsserver-1
+        ${RHODECODE_INSTALL_DIR}/community-1 \
+        ${RHODECODE_INSTALL_DIR}/vcsserver-1
 
 HEALTHCHECK CMD [ "/healthcheck" ]
 
