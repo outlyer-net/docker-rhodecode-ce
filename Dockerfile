@@ -30,16 +30,16 @@ ARG RHODECODE_MANIFEST_URL="https://dls.rhodecode.com/linux/MANIFEST"
 # XXX: This URL is also used in the automation recipes <https://code.rhodecode.com/rhodecode-automation-ce/files/4ea5dcd54ba64245b0e1fea29b9ba29667d366b3/provisioning/ansible/provision_rhodecode_ce_vm.yaml>
 ARG RHODECODE_INSTALLER_URL="https://dls-eu.rhodecode.com/dls/NzA2MjdhN2E2ODYxNzY2NzZjNDA2NTc1NjI3MTcyNzA2MjcxNzIyZTcwNjI3YQ==/rhodecode-control/latest-linux-ce"
 
-ENV RHODECODE_USER=admin
-ENV RHODECODE_USER_PASS=secret
-ENV RHODECODE_USER_EMAIL=rhodecode-support@example.com
 # NOTE unattended installs only support sqlite (but can be reconfigured later)
-ENV RHODECODE_DB=sqlite
-ENV RHODECODE_REPO_DIR=/repos
-ENV RHODECODE_VCS_PORT=3690
-ENV RHODECODE_HTTP_PORT=8080
-ENV RHODECODE_HOST=0.0.0.0
-ENV RHODECODE_INSTALL_DIR=/rhodecode
+ENV RHODECODE_USER=admin \
+    RHODECODE_USER_PASS=secret \
+    RHODECODE_USER_EMAIL=rhodecode-support@example.com \
+    RHODECODE_DB=sqlite \
+    RHODECODE_VCS_PORT=3690 \
+    RHODECODE_HTTP_PORT=8080 \
+    RHODECODE_HOST=0.0.0.0 \
+    RHODECODE_REPO_DIR=/repos \
+    RHODECODE_INSTALL_DIR=/rhodecode
 
 RUN apt-get update \
         && DEBIAN_FRONTEND=noninteractive \
