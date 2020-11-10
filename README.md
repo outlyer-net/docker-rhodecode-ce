@@ -6,7 +6,7 @@ RhodeCode provides Git, Subversion (svn) and Mercurial (hg) support.
 
 ## WIP
 
-This image is based on the [previous work by darneta](https://github.com/darneta/rhodecode-ce-dockerized), updated to current versions.
+This image is based on the [previous work by darneta](https://github.com/darneta/rhodecode-ce-dockerized), updated to current versions and heavily modified.
 
 **PLEASE NOTE**: I'm a new RhodeCode user so I'm still figuring out the best way to make this image work.
 
@@ -22,6 +22,7 @@ First of all clone the repository or download its contents, as instructed on the
 (optionally run `docker-compose logs` to see the initialisation log)
 
 That's it.
+\
 Although you may want to customise the contents of the `docker-compose.yaml` file.
 
 #### Tweaks
@@ -33,22 +34,20 @@ Although you may want to customise the contents of the `docker-compose.yaml` fil
 \
 This can be changed by setting the `RHODECODE_CONTAINER_NAME` environment variable before running docker-compose, e.g.:
 
-  $ env RHODECODE_CONTAINER_NAME=reposerver docker-compose up -d
+      $ env RHODECODE_CONTAINER_NAME=reposerver docker-compose up -d
 
 ### Without Docker Compose
 
 To preserve data even when the container is destroyed you must make sure to mount at least these three paths:
-   - `/home/rhodecode/repos` → The actual repositories
-   - `/home/rhodecode/.rccontrol/community-1` → RhodeCode configuration
-   - `/home/rhodecode/.rccontrol/vcsserver-1` → RhodeCode VCS Server configuration
+   - `/repos` → The actual repositories
+   - `/rhodecode` → RhodeCode configuration and logs
 
 Here's an example command-line to spin the container (long options are used for increased readability), named volumes are used in this example to let Docker handle volume creation (care must be taken not to unadvertedly remove the volumes or data will be lost):
 
     $ docker run --detach \
         --publish 8080:8080 \
-        --volume rhodecode_repos:/home/rhodecode/repos \
-        --volume rhodecode_conf:/home/rhodecode/.rccontrol/community-1 \
-        --volume rhodecode_vcs_conf:/home/rhodecode/.rccontrol/vcsserver-1 \
+        --volume rhodecode_repos:/repos \
+        --volume rhodecode_data:/rhodecode \
         --name rhodecode \
         outlyernet/rhodecode-ce
 
@@ -72,7 +71,7 @@ is not automated, you'll have to adjust it yourself.
 ## Exposed ports
 
 - `8080`: HTTP port on which RhodeCode serves. This port is published by default when using `docker-compose`.
-- `3690`: Subversion protocol (`svn://`) on which svnserve listens. This port isn't published by default.
+- `3690`: VCS port. This port isn't published by default.
 
 ## Links
 
