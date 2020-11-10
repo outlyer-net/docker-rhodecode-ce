@@ -78,8 +78,7 @@ VOLUME ${RHODECODE_REPO_DIR}
 # These will contain RhodeCode installed files (which are much needed too)
 #  By declaring them as volumes, if a Docker volume is mounted over them their contents
 #  will be copied. However, that apparently doesn't apply to bind mounts.
-VOLUME ${RHODECODE_INSTALL_DIR}/community-1
-VOLUME ${RHODECODE_INSTALL_DIR}/vcsserver-1
+VOLUME ${RHODECODE_INSTALL_DIR}
 
 # Declared volumes are created as root, but must be writable by rhodecode
 RUN chown rhodecode.rhodecode \

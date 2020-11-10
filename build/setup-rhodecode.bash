@@ -98,7 +98,7 @@ ${RC_CONTROL} install Community \
         ' "database": "'"$RHODECODE_DB"'"}'
 
 # supervisord.ini is partially set up, but the log and pid file paths must be rewritten
-sed -i -e "s!$RHODECODE_INSTALL_DIR/.rccontrol/supervisoFr/supervisord.!$RHODECODE_INSTALL_DIR/supervisor/supervisord.!" \
+sed -i -e "s!$RHODECODE_INSTALL_DIR/.rccontrol/supervisor/supervisord.!$RHODECODE_INSTALL_DIR/supervisor/supervisord.!" \
     "${RHODECODE_INSTALL_DIR}"/supervisor/supervisord.ini
 
 # TODO: should this be in ~ or in $RHODECODE_INSTALL_DIR ?
