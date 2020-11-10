@@ -45,6 +45,12 @@ test ! -d "${REPOBASEDIR}"
 
 mkdir -p "${REPOBASEDIR}"
 
+# RhodeCode-installer creates
+# - $HOME/.rccontrol/
+#     - $HOME/.rccontrol/cache/MANIFEST
+#     - $HOME/.rccontrol/supervisor/supervisord.*
+# - $HOME/.rccontrol-profile (symlink to /opt/rhodecode/store...)
+# - $HOME/.profile: adds .rccontrol-profile/bin to path
 ./RhodeCode-installer-* --accept-license --create-install-directory
 "${RC_CONTROL}" self-init
 # No point in removing while it's downloaded on a different layer
