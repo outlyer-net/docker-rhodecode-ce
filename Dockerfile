@@ -58,23 +58,22 @@ ENV RHODECODE_USER=admin \
     RHODECODE_REPO_DIR=/repos \
     RHODECODE_INSTALL_DIR=/rhodecode
 
-COPY --chown=0:0 container/* /
 COPY --chown=0:0 build/setup-rhodecode.bash /tmp
-
 RUN bash /tmp/setup-rhodecode.bash
 
 # Make a backup of the initial data, so that it can be easily restored
 RUN cp -rvpPT ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
+
+COPY --chown=0:0 container/* /
 
 # NOTE: Declared VOLUMEs will be created at the point they're listed
 # RHODECODE_INSTALL_DIR will contain RhodeCode installed files (which are necessary)
 #  By declaring it as a volume, if a Docker volume is mounted over it its
 #  contents will be copied. However, that doesn't apply to bind mounts
 #  (/entrypoint will copy files from /.rhodecode.dist to mimic that behaviour).
-VOLUME [ ${RHODECODE_REPO_DIR}, ${RHODECODE_INSTALL_DIR} ]
-
-HEALTHCHECK CMD [ "/healthcheck" ]
+VOLUME [ "${RHODECODE_REPO_DIR}", "${RHODECODE_INSTALL_DIR}" ]
 
 EXPOSE 8080 3690
 
-CMD [ "/entrypoint" ]
+HEALTHCHECK CMD [ "/healthcheck" ]
+ENTRYPOINT [ "/entrypoint" ]
