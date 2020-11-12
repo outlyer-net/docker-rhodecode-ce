@@ -1,28 +1,27 @@
 <!-- shields.io -->
-![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/outlyernet/rhodecode-ce)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/outlyernet/rhodecode-ce)
-![MicroBadger Layers](https://img.shields.io/microbadger/layers/outlyernet/rhodecode-ce)
-![GitHub last commit](https://img.shields.io/github/last-commit/outlyer-net/docker-rhodecode-ce)
-![GitHub](https://img.shields.io/github/license/outlyer-net/docker-rhodecode-ce)
+[![Docker Image Size (latest by date)][badge_image_size]][dockerhub]
+[![Docker Cloud Build Status][badge_cloud_build_status]][dockerhub]
+[![MicroBadger Layers][badge_microbadger_layers]][microbadger]
+[![GitHub last commit][badge_github_last_commit]][github_commits]
+[![MIT License][badge_github_license]][github_license]
 
 # RhodeCode Community Edition in Docker
 
-Docker container for the [RhodeCode](https://rhodecode.com/) Community Edition source code management platform.
+Docker container for the [RhodeCode] Community Edition source code management platform.
 
 RhodeCode provides Git, Subversion (svn) and Mercurial (hg) support.
 
 ## WIP
 
-This image is based on the [previous work by darneta](https://github.com/darneta/rhodecode-ce-dockerized), updated to current versions and heavily modified.
+This image is based on the [previous work by darneta][github_upstream], updated to current versions and heavily modified.
 
 **PLEASE NOTE**: I'm a new RhodeCode user so I'm still figuring out the best way to make this image work.
 
 ## Set up
 
-First of all clone the repository or download its contents, as instructed on the [GitHub Page][github].
-
 ### With Docker Compose
 
+    $ git --clone https://github.com/outlyer-net/docker-rhodecode-ce.git
     $ cd docker-rhodecode-ce
     $ docker-compose up -d
 
@@ -60,13 +59,13 @@ Here's an example command-line to spin the container (long options are used for 
 
 ### Administrator login
 
-By default the administrator is created with username `admin` and password `secret`.
+By default the RhodeCode administrator is created with username `admin` and password `secret`.
 \
 Both can be changed from the administration panel after login.
 
 ## Database
 
-By default the an sqlite database is used ([RhodeCode doesn't support unattended
+By default an sqlite database is used ([RhodeCode doesn't support unattended
 installs with any other database](https://docs.rhodecode.com/RhodeCode-Control/tasks/install-cli.html#unattended-installation)), but it can be set up afterwards.
 An override Docker Compose file is provided
 to set up a database container alongside RhodeCode, but the post-install set up
@@ -87,5 +86,18 @@ is not automated, you'll have to adjust it yourself.
 
 <!-- Aliases for urls -->
 
+[github_upstream]: https://github.com/darneta/rhodecode-ce-dockerized
 [github]: https://github.com/outlyer-net/docker-rhodecode-ce
 [dockerhub]: https://hub.docker.com/repository/docker/outlyernet/rhodecode-ce
+[microbadger]: https://microbadger.com/images/outlyernet/rhodecode-ce
+[github_commits]: https://github.com/outlyer-net/docker-rhodecode-ce/commits/master
+[github_license]: https://github.com/outlyer-net/docker-rhodecode-ce/blob/master/LICENSE
+[rhodecode]: https://rhodecode.com/
+
+<!-- Aliases for images -->
+
+[badge_image_size]: https://img.shields.io/docker/image-size/outlyernet/rhodecode-ce
+[badge_cloud_build_status]: https://img.shields.io/docker/cloud/build/outlyernet/rhodecode-ce
+[badge_microbadger_layers]: https://img.shields.io/microbadger/layers/outlyernet/rhodecode-ce
+[badge_github_last_commit]: https://img.shields.io/github/last-commit/outlyer-net/docker-rhodecode-ce
+[badge_github_license]: https://img.shields.io/github/license/outlyer-net/docker-rhodecode-ce
