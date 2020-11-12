@@ -10,17 +10,6 @@ FROM ubuntu:18.04
 #    18.04        2023-04               2028-04
 #    20.04        2025-04               2030-04
 
-LABEL maintainer="Toni Corvera <outlyer@gmail.com>"
-# Standard(ish) labels/annotations <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
-LABEL org.opencontainers.image.name="Unofficial RhodeCode CE Dockerized"
-LABEL org.opencontainers.image.description="RhodeCode Community Edition is an open\
-source Source Code Management server with support for Git, Mercurial and Subversion\
-(Subversion support is not -yet- enabled in this image, though)"
-LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/outlyernet/rhodecode-ce"
-LABEL org.opencontainers.image.source="https://github.com/outlyer-net/docker-rhodecode-ce"
-#LABEL org.opencontainers.image.licenses= # TODO
-#LABEL org.opencontainers.image.version= # TODO
-
 # Run before ENVs and ARGs, no need to pass all that environment (may help with caching)
 RUN apt-get update \
         && DEBIAN_FRONTEND=noninteractive \
@@ -49,6 +38,17 @@ ARG RHODECODE_MANIFEST_URL="https://dls.rhodecode.com/linux/MANIFEST"
 # XXX: This URL is also used in the automation recipes <https://code.rhodecode.com/rhodecode-automation-ce/files/4ea5dcd54ba64245b0e1fea29b9ba29667d366b3/provisioning/ansible/provision_rhodecode_ce_vm.yaml>
 ARG RHODECODE_INSTALLER_URL="https://dls-eu.rhodecode.com/dls/NzA2MjdhN2E2ODYxNzY2NzZjNDA2NTc1NjI3MTcyNzA2MjcxNzIyZTcwNjI3YQ==/rhodecode-control/latest-linux-ce"
 
+# Standard(ish) labels/annotations (org.opencontainers.*) <https://github.com/opencontainers/image-spec/blob/master/annotations.md>
+LABEL maintainer="Toni Corvera <outlyer@gmail.com>" \
+      org.opencontainers.image.name="Unofficial RhodeCode CE Dockerized" \
+      org.opencontainers.image.description="RhodeCode Community Edition is an open\
+source Source Code Management server with support for Git, Mercurial and Subversion\
+(Subversion support is not -yet- enabled in this image, though)" \
+      org.opencontainers.image.url="https://hub.docker.com/repository/docker/outlyernet/rhodecode-ce" \
+      org.opencontainers.image.source="https://github.com/outlyer-net/docker-rhodecode-ce" \
+      org.opencontainers.image.version=${RC_VERSION}
+#LABEL org.opencontainers.image.licenses= # TODO
+
 # NOTE unattended installs only support sqlite (but can be reconfigured later)
 ENV RHODECODE_USER=admin \
     RHODECODE_USER_PASS=secret \
@@ -72,9 +72,8 @@ USER rhodecode
 RUN bash /tmp/setup-rhodecode.bash
 
 # Make a backup of the initial data, so that it can be easily restored
-RUN mkdir /home/rhodecode/.rccontrol.dist \
-        && cp -rvpP ${RHODECODE_INSTALL_DIR}/community-1 /home/rhodecode/.rccontrol.dist/community-1 \
-        && cp -rvpP ${RHODECODE_INSTALL_DIR}/vcsserver-1 /home/rhodecode/.rccontrol.dist/vcsserver-1
+RUN sudo mkdir /.rhodecode.dist \
+        && sudo cp -rvpPT ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
 
 # NOTE: Declared VOLUME's will be created at the point they're listed,
 #       Must not create them early to avoid permission issues
@@ -92,5 +91,7 @@ RUN chown rhodecode.rhodecode \
 HEALTHCHECK CMD [ "/healthcheck" ]
 
 WORKDIR /home/rhodecode
+
+EXPOSE 8080 3690
 
 CMD [ "/entrypoint" ]

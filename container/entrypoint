@@ -2,8 +2,11 @@
 
 # Fix ownership on each invocation
 sudo chown -R `id -u`.`id -g` \
-    ${RHODECODE_INSTALL_DIR}/community-1 \
-    ${RHODECODE_INSTALL_DIR}/vcsserver-1 \
+    ${RHODECODE_INSTALL_DIR}/ \
     ${RHODECODE_REPO_DIR}
+
+# Reset if needed (e.g. when bind-mounting)
+#  Note reset_image won't do anything if files are present
+sudo -E /reset_image >/dev/null 2>&1
 
 exec supervisord -c ${RHODECODE_INSTALL_DIR}/supervisor/supervisord.ini

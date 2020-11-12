@@ -1,17 +1,12 @@
 #!/bin/bash
 
-RC_CONF='/home/rhodecode/.rccontrol/community-1'
-VCS_CONF='/home/rhodecode/.rccontrol/vcsserver-1'
-DIST_RC_CONF='/home/rhodecode/.rccontrol.dist/community-1'
-DIST_VCS_CONF='/home/rhodecode/.rccontrol.dist/vcsserver-1'
+DIST_RC_CONF='/.rhodecode.dist'
 
-cat <<EOF
-This script restores the installation data file that RhodeCode generated,
- in case you're mounting something over the corresponding directories.
+cat >&2 <<EOF
+This script restores the installation data files that RhodeCode generated,
+ in case you're mounting something over the corresponding directory.
 
- $RC_CONF
- and
- $VCS_CONF
+ $RHODECODE_INSTALL_DIR
 
 If your configuration has somehow become corrupt this script will be of no use
  and it would be a better option to just recreate the container.
@@ -23,19 +18,18 @@ ensure_empty() {
     [[ -d "$1" ]] && ! ls "$target/"* >/dev/null 2>&1    
 }
 
-if ! ensure_empty "$RC_CONF" || ! ensure_empty "$VCS_CONF" ; then
+if ! ensure_empty "$RHODECODE_INSTALL_DIR" ; then
     echo "*** ABORTING ***"
-    echo "$RC_CONF and $VCS_CONF must exist and be empty."
+    echo "$RHODECODE_INSTALL_DIR must exist and be empty."
     echo "****************"
     exit 1
 fi >&2
 
-if [[ ! -d "$DIST_RC_CONF" || ! -d "$DIST_VCS_CONF" ]]; then
+if [[ ! -d "$DIST_RC_CONF" ]]; then
     echo "*** ABORTING ***"
     echo "Backup of original installation data not found!"
     echo "****************"
     exit 2
-fi
+fi >&2
 
-cp -rvpPT "$DIST_RC_CONF" "$RC_CONF"
-cp -rvpPT "$DIST_VCS_CONF" "$VCS_CONF"
+exec cp -rvpPT "$DIST_RC_CONF" "$RHODECODE_INSTALL_DIR"

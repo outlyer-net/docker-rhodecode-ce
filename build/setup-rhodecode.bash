@@ -124,3 +124,14 @@ sudo chmod 0755 /usr/local/bin/rccontrol
 # Remove unnecessary installation files
 rm "${RC_CACHEDIR}"/RhodeCode-installer-*
 rm "${RC_CACHEDIR}"/*.bz2
+
+# Symlink the scm binaries/wrappers used by RhodeCode convenience
+sudo find /opt/rhodecode/store/*vcsserver* \
+    \( \
+        -name 'svn' \
+        -or \
+        -name 'git' \
+        -or \
+        -name 'hg' \
+    \) \
+    -exec ln -s '{}' /usr/local/bin/ \;
