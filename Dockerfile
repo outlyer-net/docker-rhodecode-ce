@@ -11,6 +11,7 @@ FROM ubuntu:18.04
 #    20.04        2025-04               2030-04
 
 # Run before ENVs and ARGs, no need to pass all that environment (may help with caching)
+# NOTE: sudo is required by RhodeCode-installer even when installed as root
 RUN apt-get update \
         && DEBIAN_FRONTEND=noninteractive \
                 apt-get -y install --no-install-recommends \
@@ -23,10 +24,7 @@ RUN apt-get update \
                     tzdata \
                     wget
 
-RUN useradd --create-home --shell /bin/bash rhodecode \
-        && adduser rhodecode sudo \
-        && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-        && locale-gen en_US.UTF-8 \
+RUN locale-gen en_US.UTF-8 \
         && update-locale
 
 # ARG RCC_VERSION=1.24.2
@@ -63,30 +61,19 @@ ENV RHODECODE_USER=admin \
 COPY --chown=0:0 container/* /
 COPY --chown=0:0 build/setup-rhodecode.bash /tmp
 
-USER rhodecode
-
 RUN bash /tmp/setup-rhodecode.bash
 
 # Make a backup of the initial data, so that it can be easily restored
-RUN sudo mkdir /.rhodecode.dist \
-        && sudo cp -rvpPT ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
+RUN cp -rvpPT ${RHODECODE_INSTALL_DIR}/ /.rhodecode.dist
 
-# NOTE: Declared VOLUME's will be created at the point they're listed,
-#       Must not create them early to avoid permission issues
-VOLUME ${RHODECODE_REPO_DIR}
-# These will contain RhodeCode installed files (which are much needed too)
-#  By declaring them as volumes, if a Docker volume is mounted over them their contents
-#  will be copied. However, that apparently doesn't apply to bind mounts.
-VOLUME ${RHODECODE_INSTALL_DIR}
-
-# Declared volumes are created as root, but must be writable by rhodecode
-RUN chown rhodecode.rhodecode \
-        ${RHODECODE_REPO_DIR} \
-        ${RHODECODE_INSTALL_DIR}
+# NOTE: Declared VOLUMEs will be created at the point they're listed
+# RHODECODE_INSTALL_DIR will contain RhodeCode installed files (which are necessary)
+#  By declaring it as a volume, if a Docker volume is mounted over it its
+#  contents will be copied. However, that doesn't apply to bind mounts
+#  (/entrypoint will copy files from /.rhodecode.dist to mimic that behaviour).
+VOLUME [ ${RHODECODE_REPO_DIR}, ${RHODECODE_INSTALL_DIR} ]
 
 HEALTHCHECK CMD [ "/healthcheck" ]
-
-WORKDIR /home/rhodecode
 
 EXPOSE 8080 3690
 

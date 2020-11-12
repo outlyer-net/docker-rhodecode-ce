@@ -2,14 +2,13 @@
 
 set -xe
 
+test $UID -eq 0
+
 RC_CONTROLDIR=~/.rccontrol
 RC_CACHEDIR="${RHODECODE_INSTALL_DIR}/cache"
 RC_CONTROL=~/.rccontrol-profile/bin/rccontrol
 
-sudo chown -R rhodecode.rhodecode ~
-sudo mkdir ${RHODECODE_INSTALL_DIR}
-sudo chown rhodecode.rhodecode ${RHODECODE_INSTALL_DIR}
-mkdir -p "${RC_CACHEDIR}"
+mkdir "${RHODECODE_INSTALL_DIR}" "${RC_CACHEDIR}"
 cd "${RC_CACHEDIR}"
 
 # Avoid producing garbage (specially useful to ease reading Docker Hub's build logs) 
@@ -42,8 +41,7 @@ test ! -d "${RHODECODE_INSTALL_DIR}/community-1"
 test ! -d "${RHODECODE_INSTALL_DIR}/vcsserver-1"
 test ! -d "${RHODECODE_REPO_DIR}"
 
-sudo mkdir -p "${RHODECODE_REPO_DIR}"
-sudo chown rhodecode.rhodecode "${RHODECODE_REPO_DIR}"
+mkdir -p "${RHODECODE_REPO_DIR}"
 
 # RhodeCode-installer creates
 # - $HOME/.rccontrol/
@@ -54,14 +52,13 @@ sudo chown rhodecode.rhodecode "${RHODECODE_REPO_DIR}"
 # But it doesn't appear to allow setting target directory manually and
 #  will use $HOME, override it temporarily...
 env HOME="${RHODECODE_INSTALL_DIR}" \
-    ./RhodeCode-installer-* --accept-license --create-install-directory
+    ./RhodeCode-installer-* --as-root --accept-license --create-install-directory
 # ... And move files around manually
 mv -v "${RHODECODE_INSTALL_DIR}"/.rccontrol/cache/MANIFEST "${RHODECODE_INSTALL_DIR}"/cache/
 mv -v "${RHODECODE_INSTALL_DIR}"/.rccontrol/supervisor "${RHODECODE_INSTALL_DIR}"/supervisor
 mv -v "${RHODECODE_INSTALL_DIR}"/.rccontrol-profile "${HOME}"/
 rmdir -v "${RHODECODE_INSTALL_DIR}"/.rccontrol{/cache,/}
-sudo mv -v "${RHODECODE_INSTALL_DIR}"/.profile /etc/profile.d/99-rhodecode-path.sh
-sudo chown root.root /etc/profile.d/*rhodecode*
+mv -v "${RHODECODE_INSTALL_DIR}"/.profile /etc/profile.d/99-rhodecode-path.sh
 
 "${RC_CONTROL}" --install-dir="${RHODECODE_INSTALL_DIR}" self-init
 
@@ -113,20 +110,20 @@ ${RC_CONTROL} self-stop --install-dir "${RHODECODE_INSTALL_DIR}"
 #echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
 
 # TODO: can rccontrol pick up the install dir otherwise?
-cat | sudo tee /usr/local/bin/rccontrol <<EOF
+cat >/usr/local/bin/rccontrol <<EOF
 #!/bin/sh
 exec "$HOME/.rccontrol-profile/bin/rccontrol" \
     --install-dir="$RHODECODE_INSTALL_DIR" \
     "\$@"
 EOF
-sudo chmod 0755 /usr/local/bin/rccontrol
+chmod 0755 /usr/local/bin/rccontrol
 
 # Remove unnecessary installation files
 rm "${RC_CACHEDIR}"/RhodeCode-installer-*
 rm "${RC_CACHEDIR}"/*.bz2
 
 # Symlink the scm binaries/wrappers used by RhodeCode convenience
-sudo find /opt/rhodecode/store/*vcsserver* \
+find /opt/rhodecode/store/*vcsserver* \
     \( \
         -name 'svn' \
         -or \
