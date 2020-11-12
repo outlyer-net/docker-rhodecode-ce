@@ -24,7 +24,7 @@ RUN apt-get update \
                     wget
 
 RUN useradd --create-home --shell /bin/bash rhodecode \
-        && sudo adduser rhodecode sudo \
+        && adduser rhodecode sudo \
         && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
         && locale-gen en_US.UTF-8 \
         && update-locale
