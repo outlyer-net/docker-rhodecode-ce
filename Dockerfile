@@ -60,11 +60,7 @@ ENV RHODECODE_USER=admin \
     RHODECODE_REPO_DIR=/repos \
     RHODECODE_INSTALL_DIR=/rhodecode
 
-COPY --chown=0:0 \
-        container/healthcheck \
-        container/entrypoint \
-        container/reset_image \
-        /
+COPY --chown=0:0 container/* /
 COPY --chown=0:0 build/setup-rhodecode.bash /tmp
 
 USER rhodecode
