@@ -109,12 +109,16 @@ ${RC_CONTROL} self-stop --install-dir "${RHODECODE_INSTALL_DIR}"
 
 #echo "export PATH=\"\$PATH:~/.rccontrol-profile/bin\"" >> ~/.bashrc
 
+# Workarounds to allow running as an unprivileged user,
+#  rccontrol is installed in $HOME so it won't be accessible to other users,
+#  create a hardlink (and then a wrapper to use the install directory)
+ln $HOME/.rccontrol-profile/bin/rccontrol /usr/local/bin/.rccontrol.bin
 # TODO: can rccontrol pick up the install dir otherwise?
-cat >/usr/local/bin/rccontrol <<EOF
+cat >/usr/local/bin/rccontrol <<-EOF
 #!/bin/sh
-exec "$HOME/.rccontrol-profile/bin/rccontrol" \
-    --install-dir="$RHODECODE_INSTALL_DIR" \
-    "\$@"
+exec /usr/local/bin/.rccontrol.bin \
+	--install-dir="$RHODECODE_INSTALL_DIR" \
+	"\$@"
 EOF
 chmod 0755 /usr/local/bin/rccontrol
 
