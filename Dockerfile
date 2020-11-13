@@ -72,7 +72,7 @@ COPY --chown=0:0 container/* /
 #  By declaring it as a volume, if a Docker volume is mounted over it its
 #  contents will be copied. However, that doesn't apply to bind mounts
 #  (/entrypoint will copy files from /.rhodecode.dist to mimic that behaviour).
-VOLUME [ "${RHODECODE_REPO_DIR}", "${RHODECODE_INSTALL_DIR}" ]
+VOLUME ${RHODECODE_REPO_DIR} ${RHODECODE_INSTALL_DIR}
 
 EXPOSE 8080 3690
 
