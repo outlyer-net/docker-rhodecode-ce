@@ -79,6 +79,65 @@ is not automated, you'll have to adjust it yourself.
 - `8080`: HTTP port on which RhodeCode serves. This port is published by default when using `docker-compose`.
 - `3690`: VCS port. This port isn't published by default.
 
+## Running as an unprivileged user / Avoiding file permission issues
+
+By default the image runs commands as root. 
+\
+It contains some workarounds to allow running as a different user (hence creating all files with appropriate permissions), but you'll have to do some preparations.
+
+Below are example commands for one of way to set things up, in this example we want to run with UID 1000 and GID 1000.
+
+### Using bind mounts
+
+Create mount points, run a temporary container without actually running RhodeCode, and initialise the volumes.
+\
+Note only the `/rhodecode` volume has to be initialised since `/repos` is initially empty.
+
+    $ mkdir data repos
+    $ docker run --rm -it \
+        -v $PWD/data:/rhodecode \
+        --entrypoint /bin/bash \
+        --user 1000:1000 outlyernet/rhodecode-ce
+    I have no name!@dockerid:/$ /reset_image
+    I have no name!@dockerid:/$ exit
+
+At this point `./data` is ready to be used and the container can be created normally. However to avoid errors you'll also have to mount the host's `/etc/passwd` and `/etc/group` so that the user and group names get resolved.
+
+    $ docker run --detach \
+        -v $PWD/data:/rhodecode \
+        -v $PWD/repos:/repos \
+        -v /etc/passwd:/etc/passwd:ro \
+        -v /etc/group:/etc/group:ro \
+        --user 1000:1000 outlyernet/rhodecode-ce
+
+### Using Docker volumes
+
+Do a first normal run as root so that the volumes are initialised automatically.
+
+    $ docker run --rm -it \
+        -v rhodecode_data:/rhodecode \
+        -v rhodecode_repos:/repos \
+        outlyernet/rhodecode-ce
+
+Interrupt the container (e.g. with CTRL+C), then run a new temporary container to adjust file permissions.
+
+    $ docker run --rm -it \
+        -v rhodecode_data:/rhodecode \
+        -v rhodecode_repos:/repos \
+        ubuntu:18.04
+    root@dockerid:/# chown -R 1000.1000 /rhodecode /repos
+    root@dockerid:/# exit
+
+At this point the `rhodecode_data` and `rhodecode_repos` volumes are ready to be used and the container can be created normally. However to avoid errors you'll also have to mount the host's `/etc/passwd` and `/etc/group` so that the user and group names get resolved.
+
+    $ docker run --detach \
+        -v rhodecode_data:/rhodecode \
+        -v rhodecode_repos:/repos \
+        -v /etc/passwd:/etc/passwd:ro \
+        -v /etc/group:/etc/group:ro \
+        --user 1000:1000 outlyernet/rhodecode-ce
+
+
 ## Links
 
 - [GitHub]
