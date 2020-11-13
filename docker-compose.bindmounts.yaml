@@ -1,0 +1,22 @@
+version: '2.4'
+
+# This is an override file for the base configuration.
+# Use like:
+# $ docker-compose -f docker-compose.yaml -f docker-compose.bindmounts.yaml up
+
+services:
+  rhodecode:
+    volumes:
+      - type: bind
+        source: ./repos
+        target: /repos
+      - type: bind
+        source: ./data
+        target: /rhodecode
+        
+# volumes:
+#   rhodecode_repos:      # Repositories are stored here
+#     external: "true"
+#   #  name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_repos"
+#   rhodecode_conf:   # RhodeCode's configuration is stored here
+#     name: "${RHODECODE_CONTAINER_NAME:-rhodecode}_data"
