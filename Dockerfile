@@ -22,7 +22,8 @@ RUN apt-get update \
                     sudo \
                     supervisor \
                     tzdata \
-                    wget
+                    wget \
+        && rm -rf /var/lib/apt/lists/* 
 
 RUN locale-gen en_US.UTF-8 \
         && update-locale
